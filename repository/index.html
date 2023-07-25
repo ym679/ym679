@@ -56,7 +56,7 @@
       
       
       <div class="profile-block text-center">
-        <a id="avatar" href="https://gitee.com/ym679" target="_blank">
+        <a id="avatar" href="https://github.com/ym679/" target="_blank">
           <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
         </a>
         <h2 id="name" class="hidden-xs hidden-sm">YangMeng</h2>
@@ -164,7 +164,7 @@
 	
     <ul class="social-links">
     	
-        <li><a href="https://gitee.com/ym679" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        <li><a href="https://github.com/ym679/" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
         
         <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
         
@@ -309,7 +309,7 @@
 	
     <ul class="social-links">
     	
-        <li><a href="https://gitee.com/ym679" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        <li><a href="https://github.com/ym679/" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
         
         <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
         
@@ -320,7 +320,7 @@
         &copy; 2023 yangmeng
         
         <div class="publishby">
-        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        	Theme by <a href="https://github.com/ym679" target="_blank"> yangmeng </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
         </div>
     </div>
 </footer>
@@ -374,9 +374,9 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
         var countContainer = $("#repo-count");
         var platformContainer = $("#repo-platform");
 
-        platformContainer.text("Gitee");
+        platformContainer.text("Github");
 
-        url = "https://gitee.com/api/v5/users/ym679/repos";
+        url = "https://api.github.com/users/ym679/repos";
 
         $.get(url, function (result) {
           if (result) {
@@ -395,10 +395,7 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
               if (!repo.description) {
                 repo.description = "";
               }
-              if (!repo.clone_url) {
-                repo.clone_url = repo.html_url;
-              }
-              repo.updated_at = repo.pushed_at.substring(0, repo.pushed_at.lastIndexOf("T"));
+              repo.updated_at = repo.updated_at.substring(0, repo.updated_at.lastIndexOf("T"));
               var html = baiduTpl.list(repo);
               ul.append(html);
             });

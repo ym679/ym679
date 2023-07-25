@@ -20,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://www.itcode.net.cn/books/index.html</loc>
+    <loc>https://www.itcode.net.cn/links/index.html</loc>
     
     <lastmod>2023-07-21</lastmod>
     
@@ -38,16 +38,7 @@
   </url>
   
   <url>
-    <loc>https://www.itcode.net.cn/repository/index.html</loc>
-    
-    <lastmod>2023-07-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.itcode.net.cn/links/index.html</loc>
+    <loc>https://www.itcode.net.cn/books/index.html</loc>
     
     <lastmod>2023-07-21</lastmod>
     
@@ -57,6 +48,15 @@
   
   <url>
     <loc>https://www.itcode.net.cn/tags/index.html</loc>
+    
+    <lastmod>2023-07-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.itcode.net.cn/repository/index.html</loc>
     
     <lastmod>2023-07-21</lastmod>
     
