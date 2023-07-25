@@ -3,11 +3,11 @@
   <title>yangmeng&#39;blog</title>
   
   <subtitle>yangmeng的个人博客</subtitle>
-  <link href="https://www.itcote.net.cn/atom.xml" rel="self"/>
+  <link href="https://www.itcode.net.cn/atom.xml" rel="self"/>
   
-  <link href="https://www.itcote.net.cn/"/>
+  <link href="https://www.itcode.net.cn/"/>
   <updated>2023-07-25T14:19:17.158Z</updated>
-  <id>https://www.itcote.net.cn/</id>
+  <id>https://www.itcode.net.cn/</id>
   
   <author>
     <name>yangmeng</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>测试文章</title>
-    <link href="https://www.itcote.net.cn/posts/7a6a6b5a/"/>
-    <id>https://www.itcote.net.cn/posts/7a6a6b5a/</id>
+    <link href="https://www.itcode.net.cn/posts/7a6a6b5a/"/>
+    <id>https://www.itcode.net.cn/posts/7a6a6b5a/</id>
     <published>2023-07-22T03:38:25.000Z</published>
     <updated>2023-07-25T14:19:17.158Z</updated>
     
@@ -34,10 +34,10 @@
     
     
     
-    <category term="服务器" scheme="https://www.itcote.net.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    <category term="服务器" scheme="https://www.itcode.net.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
     
     
-    <category term="Linux" scheme="https://www.itcote.net.cn/tags/Linux/"/>
+    <category term="Linux" scheme="https://www.itcode.net.cn/tags/Linux/"/>
     
   </entry>
   
