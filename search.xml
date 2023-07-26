@@ -28,6 +28,8 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">链接有两种，一种被称为硬链接（Hard Link），另一种被称为符号链接（Symbolic</span><br><span class="line">Link）。建立硬链接时，链接文件和被链接文件必须位于同一个文件系统中，并且不能建立</span><br><span class="line">指向目录的硬链接。而对符号链接，则不存在这个问题。默认情况下，ln产生硬链接。如果</span><br><span class="line">给ln命令加上-s选项，则建立符号链接。举例如下，注意ls -l列出文件的硬链接数和字节</span><br><span class="line">数：</span><br><span class="line">硬链接：</span><br><span class="line">touch hello</span><br><span class="line">ln hello word_h</span><br><span class="line"></span><br><span class="line">软链接：</span><br><span class="line">ln -s hello word_s</span><br></pre></td></tr></table></figure>
 
+<span id="more"></span>
+
 <ul>
 <li>tree</li>
 </ul>
@@ -80,7 +82,7 @@
 <p> 接下来将单片机连接到Mac上（我使用的是STC89型号的），输入一下命令来检验驱动是否安装成功</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ls /dev/tty.wchusbser*</span><br></pre></td></tr></table></figure>
 
-
+<span id="more"></span>
 
 <p> 如果输出一下数据，说明驱动成功</p>
 <p><img src="https://img.itcode.net.cn/blog/202307252302449.png" alt="image-tany"></p>
