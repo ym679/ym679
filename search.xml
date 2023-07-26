@@ -1,64 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>MAC（M1）配置51单片机环境</title>
-    <url>/posts/cdcb5503/</url>
-    <content><![CDATA[<h2 id="安装Rosetta2"><a href="#安装Rosetta2" class="headerlink" title="安装Rosetta2"></a>安装Rosetta2</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/usr/sbin/softwareupdate --install-rosetta --agree-to-license</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="安装Homebrew"><a href="#安装Homebrew" class="headerlink" title="安装Homebrew"></a>安装Homebrew</h2><p>使用Rosetta2安装Homebrew</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">arch -x86_64 /bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)&quot;</span><br><span class="line"></span><br><span class="line">#在安装或更新应用时使用下面的命令即可：arch -x86_64 brew install &lt;package&gt;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="编译器sdcc"><a href="#编译器sdcc" class="headerlink" title="编译器sdcc"></a><strong>编译器sdcc</strong></h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">arch -x86_64 brew install  sdcc</span><br><span class="line"></span><br><span class="line">#校验是否安装成功</span><br><span class="line">sdcc -version</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="安装CH341驱动"><a href="#安装CH341驱动" class="headerlink" title="安装CH341驱动"></a><strong>安装CH341驱动</strong></h2><p>为让开发版上的USB转串口模块成功连接到Mac上，我们需要CH341驱动来为Mac系统驱动</p>
-<p> 下载地址：<a href="http://www.wch.cn/download/CH341SER_MAC_ZIP.html">http://www.wch.cn/download/CH341SER_MAC_ZIP.html</a></p>
-<p> 下载好后将文件解压双击.pkg结尾的文件开始安装，一直点下一步即可完成安装</p>
-<p> 接下来将单片机连接到Mac上（我使用的是STC89型号的），输入一下命令来检验驱动是否安装成功</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ls /dev/tty.wchusbser*</span><br></pre></td></tr></table></figure>
-
-
-
-<p> 如果输出一下数据，说明驱动成功</p>
-<p><img src="https://img.itcode.net.cn/blog/202307252302449.png" alt="image-tany"></p>
-<p>注意⚠️：其中140代表串口号</p>
-<h2 id="安装烧录程序stcgal"><a href="#安装烧录程序stcgal" class="headerlink" title="安装烧录程序stcgal"></a><strong>安装烧录程序stcgal</strong></h2><p> stcgal 是 STC 单片机的下载工具，安装前需确保已提前安装好 python3。</p>
-<p>下载stcgal地址： <a href="https://github.com/grigorig/stcgal">https://github.com/grigorig/stcgal</a></p>
-<p><img src="https://img.itcode.net.cn/blog/202307252301556.png" alt="image-uyef"></p>
-<p>直接下载源码，解压文件即可，再在终端中cd命令进入解压文件夹（一直按tab键来补全路经）</p>
-<p>输入以下两行代码即可安装</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./setup.py build</span><br><span class="line">sudo ./setup.py install</span><br><span class="line"></span><br><span class="line">#检测版本信息</span><br><span class="line">stcgal -V</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="调试单片机"><a href="#调试单片机" class="headerlink" title="调试单片机"></a>调试单片机</h2><h4 id="输入代码"><a href="#输入代码" class="headerlink" title="输入代码"></a><strong>输入代码</strong></h4><p>在编译器上输入以下代码来用数码管点亮SSPAL（编译器我使用的是CLion），将代码以main.c的保存在桌面上</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include &lt;8051.h&gt;</span><br><span class="line"></span><br><span class="line">unsigned char Table[] = &#123;0x6D,0x73,0x77,0x30&#125;; //对应SPAI四个字母</span><br><span class="line"></span><br><span class="line">void Delay(unsigned int x)		//@11.0592MHz下延迟1ms</span><br><span class="line">&#123;</span><br><span class="line">	unsigned char i, j;</span><br><span class="line">	while(x--)</span><br><span class="line">	&#123;</span><br><span class="line">		i = 2;</span><br><span class="line">		j = 199;</span><br><span class="line">		do</span><br><span class="line">		&#123;</span><br><span class="line">			while (--j);</span><br><span class="line">		&#125; while (--i);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void Turn_ON(unsigned int Location ,unsigned int Num1)  //点亮</span><br><span class="line">&#123;</span><br><span class="line">	switch(Location) //片选</span><br><span class="line">	&#123;</span><br><span class="line">		case 1:P2_4=1;P2_3=1;P2_2=1;break;</span><br><span class="line">		case 2:P2_4=1;P2_3=1;P2_2=0;break;</span><br><span class="line">		case 3:P2_4=1;P2_3=0;P2_2=1;break;</span><br><span class="line">		case 4:P2_4=1;P2_3=0;P2_2=0;break;</span><br><span class="line">		case 5:P2_4=0;P2_3=1;P2_2=1;break;</span><br><span class="line">		case 6:P2_4=0;P2_3=1;P2_2=0;break;</span><br><span class="line">		case 7:P2_4=0;P2_3=0;P2_2=1;break;</span><br><span class="line">		case 8:P2_4=0;P2_3=0;P2_2=0;break;</span><br><span class="line">	&#125;</span><br><span class="line">	P0=Table[Num1]; //段选</span><br><span class="line">	Delay(1);</span><br><span class="line">	P0=0x00;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void main() //主函数</span><br><span class="line">&#123;</span><br><span class="line">	while(1)</span><br><span class="line">	&#123;</span><br><span class="line">		Turn_ON(1,0);</span><br><span class="line">		Turn_ON(2,0);</span><br><span class="line">		Turn_ON(3,1);</span><br><span class="line">		Turn_ON(4,2);</span><br><span class="line">		Turn_ON(5,3);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="使用sdcc进行编译"><a href="#使用sdcc进行编译" class="headerlink" title="使用sdcc进行编译"></a><strong>使用sdcc进行编译</strong></h4><p> 使用终端进入到代码的所在目录下，输入以下代码</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sdcc main.c</span><br></pre></td></tr></table></figure>
-
-<p>就可以发现文件夹中多出了一系列文件</p>
-<h4 id="使用stcgal将代码烧录入单片机中"><a href="#使用stcgal将代码烧录入单片机中" class="headerlink" title="使用stcgal将代码烧录入单片机中"></a><strong>使用stcgal将代码烧录入单片机中</strong></h4><p> 输入以下代码</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stcgal -P stc89 -p /dev/tty.wchusbserial140</span><br></pre></td></tr></table></figure>
-
-<p> -P后参数表示单片机型号，例如我的是STC89，-p后参数表示单片机串口号</p>
-<p><img src="https://img.itcode.net.cn/blog/202307252303552.png" alt="image-eghl"></p>
-<p>注意⚠️：在执行stcgal命令，需要给单片机断电再重新接电才能完成写入过程</p>
-<h4 id="点亮了单片机上的SSPAL！"><a href="#点亮了单片机上的SSPAL！" class="headerlink" title="点亮了单片机上的SSPAL！"></a><strong>点亮了单片机上的SSPAL！</strong></h4><p><img src="https://img.itcode.net.cn/blog/202307252303331.png" alt="image-lfqb"></p>
-]]></content>
-      <categories>
-        <category>后端</category>
-      </categories>
-      <tags>
-        <tag>嵌入式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux常用命令</title>
     <url>/posts/d0edc1ed/</url>
     <content><![CDATA[<h2 id="目录与文件"><a href="#目录与文件" class="headerlink" title="目录与文件"></a>目录与文件</h2><ul>
@@ -114,6 +56,64 @@
       </categories>
       <tags>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MAC（M1）配置51单片机环境</title>
+    <url>/posts/cdcb5503/</url>
+    <content><![CDATA[<h2 id="安装Rosetta2"><a href="#安装Rosetta2" class="headerlink" title="安装Rosetta2"></a>安装Rosetta2</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/usr/sbin/softwareupdate --install-rosetta --agree-to-license</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="安装Homebrew"><a href="#安装Homebrew" class="headerlink" title="安装Homebrew"></a>安装Homebrew</h2><p>使用Rosetta2安装Homebrew</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">arch -x86_64 /bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)&quot;</span><br><span class="line"></span><br><span class="line">#在安装或更新应用时使用下面的命令即可：arch -x86_64 brew install &lt;package&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="编译器sdcc"><a href="#编译器sdcc" class="headerlink" title="编译器sdcc"></a><strong>编译器sdcc</strong></h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">arch -x86_64 brew install  sdcc</span><br><span class="line"></span><br><span class="line">#校验是否安装成功</span><br><span class="line">sdcc -version</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="安装CH341驱动"><a href="#安装CH341驱动" class="headerlink" title="安装CH341驱动"></a><strong>安装CH341驱动</strong></h2><p>为让开发版上的USB转串口模块成功连接到Mac上，我们需要CH341驱动来为Mac系统驱动</p>
+<p> 下载地址：<a href="http://www.wch.cn/download/CH341SER_MAC_ZIP.html">http://www.wch.cn/download/CH341SER_MAC_ZIP.html</a></p>
+<p> 下载好后将文件解压双击.pkg结尾的文件开始安装，一直点下一步即可完成安装</p>
+<p> 接下来将单片机连接到Mac上（我使用的是STC89型号的），输入一下命令来检验驱动是否安装成功</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ls /dev/tty.wchusbser*</span><br></pre></td></tr></table></figure>
+
+
+
+<p> 如果输出一下数据，说明驱动成功</p>
+<p><img src="https://img.itcode.net.cn/blog/202307252302449.png" alt="image-tany"></p>
+<p>注意⚠️：其中140代表串口号</p>
+<h2 id="安装烧录程序stcgal"><a href="#安装烧录程序stcgal" class="headerlink" title="安装烧录程序stcgal"></a><strong>安装烧录程序stcgal</strong></h2><p> stcgal 是 STC 单片机的下载工具，安装前需确保已提前安装好 python3。</p>
+<p>下载stcgal地址： <a href="https://github.com/grigorig/stcgal">https://github.com/grigorig/stcgal</a></p>
+<p><img src="https://img.itcode.net.cn/blog/202307252301556.png" alt="image-uyef"></p>
+<p>直接下载源码，解压文件即可，再在终端中cd命令进入解压文件夹（一直按tab键来补全路经）</p>
+<p>输入以下两行代码即可安装</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./setup.py build</span><br><span class="line">sudo ./setup.py install</span><br><span class="line"></span><br><span class="line">#检测版本信息</span><br><span class="line">stcgal -V</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="调试单片机"><a href="#调试单片机" class="headerlink" title="调试单片机"></a>调试单片机</h2><h4 id="输入代码"><a href="#输入代码" class="headerlink" title="输入代码"></a><strong>输入代码</strong></h4><p>在编译器上输入以下代码来用数码管点亮SSPAL（编译器我使用的是CLion），将代码以main.c的保存在桌面上</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include &lt;8051.h&gt;</span><br><span class="line"></span><br><span class="line">unsigned char Table[] = &#123;0x6D,0x73,0x77,0x30&#125;; //对应SPAI四个字母</span><br><span class="line"></span><br><span class="line">void Delay(unsigned int x)		//@11.0592MHz下延迟1ms</span><br><span class="line">&#123;</span><br><span class="line">	unsigned char i, j;</span><br><span class="line">	while(x--)</span><br><span class="line">	&#123;</span><br><span class="line">		i = 2;</span><br><span class="line">		j = 199;</span><br><span class="line">		do</span><br><span class="line">		&#123;</span><br><span class="line">			while (--j);</span><br><span class="line">		&#125; while (--i);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void Turn_ON(unsigned int Location ,unsigned int Num1)  //点亮</span><br><span class="line">&#123;</span><br><span class="line">	switch(Location) //片选</span><br><span class="line">	&#123;</span><br><span class="line">		case 1:P2_4=1;P2_3=1;P2_2=1;break;</span><br><span class="line">		case 2:P2_4=1;P2_3=1;P2_2=0;break;</span><br><span class="line">		case 3:P2_4=1;P2_3=0;P2_2=1;break;</span><br><span class="line">		case 4:P2_4=1;P2_3=0;P2_2=0;break;</span><br><span class="line">		case 5:P2_4=0;P2_3=1;P2_2=1;break;</span><br><span class="line">		case 6:P2_4=0;P2_3=1;P2_2=0;break;</span><br><span class="line">		case 7:P2_4=0;P2_3=0;P2_2=1;break;</span><br><span class="line">		case 8:P2_4=0;P2_3=0;P2_2=0;break;</span><br><span class="line">	&#125;</span><br><span class="line">	P0=Table[Num1]; //段选</span><br><span class="line">	Delay(1);</span><br><span class="line">	P0=0x00;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void main() //主函数</span><br><span class="line">&#123;</span><br><span class="line">	while(1)</span><br><span class="line">	&#123;</span><br><span class="line">		Turn_ON(1,0);</span><br><span class="line">		Turn_ON(2,0);</span><br><span class="line">		Turn_ON(3,1);</span><br><span class="line">		Turn_ON(4,2);</span><br><span class="line">		Turn_ON(5,3);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用sdcc进行编译"><a href="#使用sdcc进行编译" class="headerlink" title="使用sdcc进行编译"></a><strong>使用sdcc进行编译</strong></h4><p> 使用终端进入到代码的所在目录下，输入以下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sdcc main.c</span><br></pre></td></tr></table></figure>
+
+<p>就可以发现文件夹中多出了一系列文件</p>
+<h4 id="使用stcgal将代码烧录入单片机中"><a href="#使用stcgal将代码烧录入单片机中" class="headerlink" title="使用stcgal将代码烧录入单片机中"></a><strong>使用stcgal将代码烧录入单片机中</strong></h4><p> 输入以下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stcgal -P stc89 -p /dev/tty.wchusbserial140</span><br></pre></td></tr></table></figure>
+
+<p> -P后参数表示单片机型号，例如我的是STC89，-p后参数表示单片机串口号</p>
+<p><img src="https://img.itcode.net.cn/blog/202307252303552.png" alt="image-eghl"></p>
+<p>注意⚠️：在执行stcgal命令，需要给单片机断电再重新接电才能完成写入过程</p>
+<h4 id="点亮了单片机上的SSPAL！"><a href="#点亮了单片机上的SSPAL！" class="headerlink" title="点亮了单片机上的SSPAL！"></a><strong>点亮了单片机上的SSPAL！</strong></h4><p><img src="https://img.itcode.net.cn/blog/202307252303331.png" alt="image-lfqb"></p>
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>嵌入式</tag>
       </tags>
   </entry>
 </search>
