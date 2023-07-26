@@ -6,7 +6,7 @@
   <link href="https://www.itcode.net.cn/atom.xml" rel="self"/>
   
   <link href="https://www.itcode.net.cn/"/>
-  <updated>2023-07-25T15:05:30.774Z</updated>
+  <updated>2023-07-26T12:51:07.420Z</updated>
   <id>https://www.itcode.net.cn/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux常用命令</title>
+    <link href="https://www.itcode.net.cn/posts/d0edc1ed/"/>
+    <id>https://www.itcode.net.cn/posts/d0edc1ed/</id>
+    <published>2023-07-26T12:35:13.000Z</published>
+    <updated>2023-07-26T12:51:07.420Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="目录与文件"><a href="#目录与文件" class="headerlink" title="目录与文件"></a>目录与文件</h2><ul><li>more</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">more [OPTION] FILE…</span><br><span class="line">查看文本文件的内容，屏幕显示完一屏就等待用户按下任意键再滚动到下一屏，如果中途不想继续看下去了，可以按Ctrl+C或q终止显示。</span><br></pre></td></tr></table></figure><ul><li>less</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">less [OPTION] FILE…</span><br><span class="line">查看文本文件的内容，屏幕显示完一屏就等待用户按键，用户可以向上或向下查看，如</span><br><span class="line">果中途不想继续看下去了，可以按Ctrl+C或q终止显示。</span><br></pre></td></tr></table></figure><ul><li>head</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">head [OPTION]… FILE…</span><br><span class="line">显示指定文件的前面几行。如果没有指定文件，将从标准输入（键盘）上读取。如果没</span><br><span class="line">有指定要显示的行数，则默认显示前10行。如果要显示文件的前5行：</span><br><span class="line"></span><br><span class="line">$ head -5 file1</span><br></pre></td></tr></table></figure><ul><li>tail</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tail [OPTION]… FILE…</span><br><span class="line">显示文件的最后几行。若没有指定显示的行或字符数，则默认显示末尾10行。如果要显</span><br><span class="line">示文件末5行：</span><br><span class="line">$ tail -5 file1</span><br></pre></td></tr></table></figure><ul><li>ln</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">链接有两种，一种被称为硬链接（Hard Link），另一种被称为符号链接（Symbolic</span><br><span class="line">Link）。建立硬链接时，链接文件和被链接文件必须位于同一个文件系统中，并且不能建立</span><br><span class="line">指向目录的硬链接。而对符号链接，则不存在这个问题。默认情况下，ln产生硬链接。如果</span><br><span class="line">给ln命令加上-s选项，则建立符号链接。举例如下，注意ls -l列出文件的硬链接数和字节</span><br><span class="line">数：</span><br><span class="line">硬链接：</span><br><span class="line">touch hello</span><br><span class="line">ln hello word_h</span><br><span class="line"></span><br><span class="line">软链接：</span><br><span class="line">ln -s hello word_s</span><br></pre></td></tr></table></figure><ul><li>tree</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这个命令需要下载安装，ubuntu下</span><br><span class="line">sudo apt-get install tree</span><br><span class="line">按结构树的形状显示目录和文件</span><br></pre></td></tr></table></figure><ul><li>wc</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">利用wc 指令我们可以计算文件的Byte 数、字数、或是列数,若不指定文件名称、或</span><br><span class="line">是所给予的文件名为“-”,则wc 指令会从标准输入设备读取数据。</span><br><span class="line">wc -l ./*</span><br><span class="line"></span><br><span class="line">-c 或–bytes 或–chars 只显示Bytes 数。</span><br><span class="line">-l 或–lines 只显示列数。</span><br><span class="line">-w 或–words 只显示字数。</span><br><span class="line"></span><br></pre></td></tr></table></figure><ul><li>du</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">查看某个目录的大小：</span><br><span class="line">以M为单位</span><br><span class="line">du -hm /home/itcast/test</span><br><span class="line">以B为单位</span><br><span class="line">du -hb ./*</span><br><span class="line">以K为单位,4k的整数倍</span><br><span class="line">du -hk ./*</span><br><span class="line">总计大小，以M为单位</span><br><span class="line">du -hc ./*</span><br></pre></td></tr></table></figure><ul><li>df</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df查看磁盘使用情况</span><br><span class="line">df --block-size=GB</span><br><span class="line">df --block-size=MB</span><br></pre></td></tr></table></figure><h2 id="文件属性与用户组"><a href="#文件属性与用户组" class="headerlink" title="文件属性与用户组"></a>文件属性与用户组</h2>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;目录与文件&quot;&gt;&lt;a href=&quot;#目录与文件&quot; class=&quot;headerlink&quot; title=&quot;目录与文件&quot;&gt;&lt;/a&gt;目录与文件&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;more&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;</summary>
+      
+    
+    
+    
+    <category term="服务器" scheme="https://www.itcode.net.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    
+    <category term="Linux" scheme="https://www.itcode.net.cn/tags/Linux/"/>
+    
+  </entry>
   
   <entry>
     <title>MAC（M1）配置51单片机环境</title>
