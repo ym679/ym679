@@ -4,9 +4,9 @@ https://www.itcode.net.cn/schedule/index.html
 https://www.itcode.net.cn/tags/index.html
 https://www.itcode.net.cn/categories/index.html
 https://www.itcode.net.cn/about/index.html
+https://www.itcode.net.cn/links/index.html
 https://www.itcode.net.cn/books/index.html
 https://www.itcode.net.cn/repository/index.html
-https://www.itcode.net.cn/links/index.html
 https://www.itcode.net.cn/404.html
 https://www.itcode.net.cn/
 https://www.itcode.net.cn/tags/Linux/
