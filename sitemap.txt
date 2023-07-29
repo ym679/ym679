@@ -4,12 +4,12 @@ https://www.itcode.net.cn/schedule/index.html
 https://www.itcode.net.cn/tags/index.html
 https://www.itcode.net.cn/categories/index.html
 https://www.itcode.net.cn/about/index.html
+https://www.itcode.net.cn/repository/index.html
 https://www.itcode.net.cn/books/index.html
 https://www.itcode.net.cn/links/index.html
-https://www.itcode.net.cn/repository/index.html
 https://www.itcode.net.cn/404.html
 https://www.itcode.net.cn/
-https://www.itcode.net.cn/tags/Linux/
 https://www.itcode.net.cn/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/
-https://www.itcode.net.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/
+https://www.itcode.net.cn/tags/Linux/
 https://www.itcode.net.cn/categories/%E5%90%8E%E7%AB%AF/
+https://www.itcode.net.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/
