@@ -28,7 +28,7 @@
 <meta property="og:description" content="目录与文件 more  12more [OPTION] FILE…查看文本文件的内容，屏幕显示完一屏就等待用户按下任意键再滚动到下一屏，如果中途不想继续看下去了，可以按Ctrl+C或q终止显示。   less  123less [OPTION] FILE…查看文本文件的内容，屏幕显示完一屏就等待用户按键，用户可以向上或向下查看，如果中途不想继续看下去了，可以按Ctrl+C或q终止显示。   hea">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-07-26T12:35:13.000Z">
-<meta property="article:modified_time" content="2023-07-29T05:33:51.394Z">
+<meta property="article:modified_time" content="2023-07-29T10:00:11.712Z">
 <meta property="article:author" content="yangmeng">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
@@ -122,17 +122,17 @@
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">3</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">2</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a>
 
   </li>
         <li class="menu-item menu-item-about">
@@ -226,7 +226,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-07-29 13:33:51" itemprop="dateModified" datetime="2023-07-29T13:33:51+08:00">2023-07-29</time>
+                <time title="修改时间：2023-07-29 18:00:11" itemprop="dateModified" datetime="2023-07-29T18:00:11+08:00">2023-07-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -318,9 +318,147 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">根据文件名查找</span><br><span class="line">find pathname -options [-print -exec -ok -name -type...]</span><br><span class="line"></span><br><span class="line">在目录中搜索文件，path指定目录路径，系统从这里开始沿着目录树向下查找文件。它</span><br><span class="line">是一个路径列表，相互用空格分离，如果不写path，那么默认为当前目录。Expression 是</span><br><span class="line">find命令接受的表达式，find命令的所有操作都是针对表达式的。</span><br><span class="line"></span><br><span class="line">一条最常用的find命令－－在当前目录及子目录下查找所有以file开头的文件名。</span><br><span class="line">$ find . -name &#x27;file*&#x27;</span><br><span class="line">$ find / -name &#x27;vimrc&#x27;</span><br><span class="line">$ find ~ -name &#x27;*.c&#x27;</span><br><span class="line">$ find /usr/ -name &quot;*tmp*&quot; -exec ls -l &#123; &#125; \;</span><br><span class="line">find ./ -name &quot;*tmp&quot; -ok rm &#123; &#125; \;</span><br></pre></td></tr></table></figure>
 
+<ul>
+<li>grep</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">根据内容检索</span><br><span class="line">grep [options] PATTERN [FILE...]</span><br><span class="line"></span><br><span class="line">在指定文件中搜索特定的内容，并将含有这些内容的行输出到标准输出。若不指定文件</span><br><span class="line">名，则从标准输入读取。</span><br><span class="line"></span><br><span class="line">[options]部分包含的主要参数：</span><br><span class="line">-I：不区分大小写（只适用于单字符）。</span><br><span class="line">-h：查询多文件时不显示文件名。</span><br><span class="line">-l：查询多文件时只输出包含匹配字符的文件名。</span><br><span class="line">-n：显示匹配行及行号。</span><br><span class="line">-s：不显示不存在或无匹配文本的错误信息。</span><br><span class="line">-v：显示不包含匹配文本的所有行。</span><br><span class="line">-R: 连同子目录中所有文件一起查找。</span><br><span class="line"></span><br><span class="line">比如到系统头文件目录下查找所有包含printf的文件</span><br><span class="line">$ grep &#x27;printf&#x27; /usr/include -R</span><br></pre></td></tr></table></figure>
 
 
 
+<h2 id="安装卸载软件"><a href="#安装卸载软件" class="headerlink" title="安装卸载软件"></a>安装卸载软件</h2><ul>
+<li>更新源服务器列表</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+
+<p>更新完服务器列表后需要更新下源</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update 更新源</span><br><span class="line">sudo apt-get install package 安装包</span><br><span class="line">sudo apt-get remove package 删除包</span><br><span class="line">sudo apt-cache search package 搜索软件包</span><br><span class="line">sudo apt-cache show package 获取包的相关信息，如说明、大小、版本等</span><br><span class="line">sudo apt-get install package --reinstall 重新安装包</span><br><span class="line">sudo apt-get -f install 修复安装</span><br><span class="line">sudo apt-get remove package --purge 删除包，包括配置文件等</span><br><span class="line">sudo apt-get build-dep package 安装相关的编译环境</span><br><span class="line">sudo apt-get upgrade 更新已安装的包</span><br><span class="line">sudo apt-get dist-upgrade 升级系统</span><br><span class="line">sudo apt-cache depends package 了解使用该包依赖那些包</span><br><span class="line">sudo apt-cache rdepends package 查看该包被哪些包依赖</span><br><span class="line">sudo apt-get source package 下载该包的源代码</span><br><span class="line">sudo apt-get clean &amp;&amp; sudo apt-get autoclean 清理无用的包</span><br><span class="line">sudo apt-get check 检查是否有损坏的依赖</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>deb包安装</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">安装deb软件包命令： sudo dpkg -i xxx.deb</span><br><span class="line">删除软件包命令： sudo dpkg -r xxx.deb</span><br><span class="line">连同配置文件一起删除命令： sudo dpkg -r --purge xxx.deb</span><br><span class="line">查看软件包信息命令： sudo dpkg -info xxx.deb</span><br><span class="line">查看文件拷贝详情命令： sudo dpkg -L xxx.deb</span><br><span class="line">查看系统中已安装软件包信息命令： sudo dpkg -l</span><br><span class="line">重新配置软件包命令： sudo dpkg-reconfigure xxx</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>源码安装</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1. 解压缩源代码包</span><br><span class="line">2. cd dir</span><br><span class="line">3. ./configure</span><br><span class="line">检测文件是否缺失，创建Makefile,检测编译环境</span><br><span class="line">4. make</span><br><span class="line">编译源码，生成库和可执行程序</span><br><span class="line">5. sudo make install</span><br><span class="line">把库和可执行程序，安装到系统路径下</span><br><span class="line">6. sudo make distclean</span><br><span class="line">删除和卸载软件</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h2><ul>
+<li>mount</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">命令格式：</span><br><span class="line">mount [-t vfstype] -o options device dir</span><br><span class="line"></span><br><span class="line">其中：</span><br><span class="line">* -t vfstype 指定文件系统的类型，通常不必指定。mount 会自动选择正确的类型。常</span><br><span class="line">用类型有：</span><br><span class="line">光盘或光盘镜像：iso9660</span><br><span class="line">DOS fat16文件系统：msdos</span><br><span class="line">Windows 9x fat32文件系统：vfat</span><br><span class="line">Windows NT ntfs文件系统：ntfs</span><br><span class="line">Mount Windows文件网络共享：smbfs</span><br><span class="line">UNIX(LINUX) 文件网络共享：nfs</span><br><span class="line"></span><br><span class="line">* -o options 主要用来描述设备或档案的挂接方式。常用的参数有：</span><br><span class="line">loop：用来把一个文件当成硬盘分区挂接上系统</span><br><span class="line">ro：采用只读方式挂接设备</span><br><span class="line">rw：采用读写方式挂接设备</span><br><span class="line">iocharset：指定访问文件系统所用字符集</span><br><span class="line"></span><br><span class="line">* device 要挂接(mount)的设备。</span><br><span class="line">* dir设备在系统上的挂接点(mount point)。</span><br></pre></td></tr></table></figure>
+
+<h3 id="挂接光盘镜像文件"><a href="#挂接光盘镜像文件" class="headerlink" title="挂接光盘镜像文件"></a>挂接光盘镜像文件</h3><ul>
+<li>1.从光盘制作光盘镜像文件。将光盘放入光驱，执行下面的命令。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#cp /dev/cdrom /home/sunky/mydisk.iso 或</span><br><span class="line">#dd if=/dev/cdrom of=/home/sunky/mydisk.iso</span><br><span class="line"></span><br><span class="line">注：执行上面的任何一条命令都可将当前光驱里的光盘制作成光盘镜像文件/home/</span><br><span class="line">sunky/mydisk.iso</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2.文件和目录制作成光盘镜像文件，执行下面的命令。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#mkisofs -r -J -V mydisk -o /home/sunky/mydisk.iso /home/sunky/ mydir</span><br></pre></td></tr></table></figure>
+
+<p>​	注：这条命令将&#x2F;home&#x2F;sunky&#x2F;mydir目录下所有的目录和文件制作成光盘镜像文件&#x2F;<br>home&#x2F;sunky&#x2F;mydisk.iso，光盘卷标为：mydisk</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-r 这个选项能够将文件的uid,gid设为0，因为uid与gid只在制作镜像者本身系统上有效，在其它电脑上没有对应</span><br><span class="line">的用户，所以留着也只是无效用户；将所有文件设置为可读。如果文件有可执行的权限的话，将继续保持其可执行</span><br><span class="line">的权限。去掉所有文件及文件夹可写权限，因为挂载的光盘镜像本身也就为只读系统，可写权限无意义。其它特殊</span><br><span class="line">权限都将被清空。</span><br><span class="line">-o 指定被创建的镜像文件名称(包含目录位置)</span><br><span class="line">-V 指定光盘标签，就像windows下面挂载系统盘时会显示系统盘的名字一样。</span><br><span class="line">-J 或-joliet选项表示使用Joliet格式(可使用unicode储存中文档名）由于在ISO 9660中有一些限制，如字符</span><br><span class="line">设置限制,文件名长度限制和目录树深度制。这些规定阻碍了用户复制数据，Joliet是ISO 9660的一个扩展，由</span><br><span class="line">Microsoft提出和实现。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>3.光盘镜像文件的挂接(mount)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkisofs -r -J -V mydisk -o /home/itcast/mydisk.iso /home/itcast/object/</span><br></pre></td></tr></table></figure>
+
+<p>​		将&#x2F;home&#x2F;itcast&#x2F;object&#x2F;目录下的内容生成一个叫mydisk.iso的镜像文件保存在目录&#x2F;</p>
+<p>home&#x2F;itcast&#x2F;下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#mkdir /mnt/vcdrom</span><br></pre></td></tr></table></figure>
+
+<p>​		注：建立一个目录用来作挂接点(mount point)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#mount -o loop -t iso9660 /home/sunky/mydisk.iso /mnt/vcdrom</span><br></pre></td></tr></table></figure>
+
+<p>​		注：使用&#x2F;mnt&#x2F;vcdrom就可以访问盘镜像文件mydisk.iso里的所有文件了。</p>
+<h3 id="挂载U盘"><a href="#挂载U盘" class="headerlink" title="挂载U盘"></a>挂载U盘</h3><p>磁盘设备命名一般规则：</p>
+<p>在Linux中，设备名称通常都保存在&#x2F;dev里，&#x2F;dev下的文件是特殊的设备文件，和特定</p>
+<p>的驱动程序相关联。而这些设备的命名有一定的规则，可以使用“推理”方式把设备名称找</p>
+<p>出来。</p>
+<p>例如：&#x2F;dev&#x2F; sda1，“sd”是SCSI Device (hd是Hard Disk硬盘，fd是Floppy Disk</p>
+<p>软盘)。其中“a”代表第一块硬盘，如果主机上装有4块硬盘，那么他们应该依次编号</p>
+<p>sda、sdb、sdc、sdd。而sda1中的“1”代表sda的第一个主分区，sda2代表第二个主分区。</p>
+<p>由于一块硬盘的主分区最多允许有4个，因此扩展分区的第一个逻辑分区从sda5开始向后依</p>
+<p>次编号。</p>
+<ul>
+<li>1.检测存储设备名称</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk -l</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2.挂载存储设备sdb1到挂载点&#x2F;mnt目录</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mount /dev/sdb1 /mnt -o utf8</span><br><span class="line">可以使U盘内的中文正常显示出来。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>3.访问&#x2F;mnt</p>
+</li>
+<li><p>4.卸载&#x2F;mnt</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo umount /mnt</span><br></pre></td></tr></table></figure>
+
+<h3 id="umount"><a href="#umount" class="headerlink" title="umount"></a>umount</h3><p>卸载命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo umount 挂在点</span><br></pre></td></tr></table></figure>
+
+<h3 id="dd"><a href="#dd" class="headerlink" title="dd"></a>dd</h3><p>dd:拷贝</p>
+<p>例1：拷贝光碟(注意，你的光碟是标准的iso9660格式才可以这么做唷！)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd if=/dev/cdrom of=cdrom.iso</span><br></pre></td></tr></table></figure>
+
+<p>例2：将文件sfile拷贝到文件dfile中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ dd if=sfile of=dfile</span><br></pre></td></tr></table></figure>
+
+<p>例3：创建一个100M的空文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd if=/dev/zero of=hello.txt bs=100M count=1</span><br></pre></td></tr></table></figure>
+
+<p><em>&#x2F;dev&#x2F;null，外号叫无底洞，你可以向它输出任何数据，它通吃，并且不会撑着！</em></p>
+<p><em>&#x2F;dev&#x2F;zero,是一个输入设备，你可你用它来初始化文件,从里面读出来的数据都是0。</em></p>
+<p><em>使用mke2fs命令将常规文件格式化成分区当成文件系统来使用，使用mount借助loop设</em></p>
+<p><em>备把映像文件当成磁盘分区挂载。</em></p>
+<ul>
+<li>1.以&#x2F;dev&#x2F;zero为输入文件，imagefile为输出创建一个2M大小的文件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$dd if=/dev/zero of=imagefile bs=2048 count=1024</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2.使用mke2fs命令将该文件制作成文件系统。制作期间需输入“y”确认。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$mke2fs imagefile</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>3.制作成功后可以将该文件使用mount命令借助loop挂载到&#x2F;mnt下</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sudo mount -o loop imagefile /mnt</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>4.可以查看到lost+found缺省目录</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ls /mnt</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>5.可以像使用普通磁盘一样，直接在里面创建文件并写入内容。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sudo vi hello.c</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>6.lost+found hello.c</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ls /mnt</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>7.在&#x2F;mnt内执行mount命令可以查看该“文件系统”的详细信息。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$mount</span><br><span class="line">如：/home/itcast/mydisk on /mnt type ext2 (rw)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8.可使用umount命令将该“磁盘”卸载。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sudo umount /mnt</span><br></pre></td></tr></table></figure>
 
 
 
@@ -349,7 +487,10 @@
     <a href="/posts/cdcb5503/" rel="prev" title="MAC（M1）配置51单片机环境">
       <i class="fa fa-chevron-left"></i> MAC（M1）配置51单片机环境
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/posts/79666db/" rel="next" title="数据结构">
+      数据结构 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -409,7 +550,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E4%B8%8E%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">目录与文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E4%B8%8E%E7%94%A8%E6%88%B7%E7%BB%84"><span class="nav-number">2.</span> <span class="nav-text">文件属性与用户组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%A3%80%E7%B4%A2"><span class="nav-number">3.</span> <span class="nav-text">查找与检索</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E4%B8%8E%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">目录与文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E4%B8%8E%E7%94%A8%E6%88%B7%E7%BB%84"><span class="nav-number">2.</span> <span class="nav-text">文件属性与用户组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%A3%80%E7%B4%A2"><span class="nav-number">3.</span> <span class="nav-text">查找与检索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%8D%B8%E8%BD%BD%E8%BD%AF%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">安装卸载软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">磁盘管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%82%E6%8E%A5%E5%85%89%E7%9B%98%E9%95%9C%E5%83%8F%E6%96%87%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">挂接光盘镜像文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%82%E8%BD%BDU%E7%9B%98"><span class="nav-number">5.2.</span> <span class="nav-text">挂载U盘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#umount"><span class="nav-number">5.3.</span> <span class="nav-text">umount</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dd"><span class="nav-number">5.4.</span> <span class="nav-text">dd</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -425,20 +566,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
