@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"www.itcode.net.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="重撸数据结构  刷算法  系统集成项目管理工程  C++">
+  <meta name="description" content="分析JDBC操作问题123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354    public static void main(String[] args) &amp;#123;        Connection connection &#x3D; null;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="近期待办">
-<meta property="og:url" content="https://www.itcode.net.cn/posts/b5de2365/index.html">
+<meta property="og:title" content="手撕Mybatis--分析JDBC操作问题">
+<meta property="og:url" content="https://www.itcode.net.cn/posts/349665f2/index.html">
 <meta property="og:site_name" content="YangMeng&#39;Blog">
-<meta property="og:description" content="重撸数据结构  刷算法  系统集成项目管理工程  C++">
+<meta property="og:description" content="分析JDBC操作问题123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354    public static void main(String[] args) &amp;#123;        Connection connection &#x3D; null;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-08-08T15:07:48.000Z">
-<meta property="article:modified_time" content="2023-08-08T15:11:59.220Z">
+<meta property="article:published_time" content="2023-08-10T14:52:20.000Z">
+<meta property="article:modified_time" content="2023-08-10T15:25:35.157Z">
 <meta property="article:author" content="yangmeng">
-<meta property="article:tag" content="IT | 编程 | 技术">
+<meta property="article:tag" content="Mybatis">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://www.itcode.net.cn/posts/b5de2365/">
+<link rel="canonical" href="https://www.itcode.net.cn/posts/349665f2/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>近期待办 | YangMeng'Blog</title>
+  <title>手撕Mybatis--分析JDBC操作问题 | YangMeng'Blog</title>
   
 
 
@@ -196,7 +196,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.itcode.net.cn/posts/b5de2365/">
+    <link itemprop="mainEntityOfPage" href="https://www.itcode.net.cn/posts/349665f2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -209,7 +209,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          近期待办
+          手撕Mybatis--分析JDBC操作问题
         </h1>
 
         <div class="post-meta">
@@ -220,7 +220,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-08-08 23:07:48 / 修改时间：23:11:59" itemprop="dateCreated datePublished" datetime="2023-08-08T23:07:48+08:00">2023-08-08</time>
+              <time title="创建时间：2023-08-10 22:52:20 / 修改时间：23:25:35" itemprop="dateCreated datePublished" datetime="2023-08-10T22:52:20+08:00">2023-08-10</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,7 +228,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%A7%84%E5%88%92/" itemprop="url" rel="index"><span itemprop="name">规划</span></a>
+                  <a href="/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">源码分析</span></a>
                 </span>
             </span>
 
@@ -243,12 +243,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <ul>
-<li><input disabled="" type="checkbox"> 重撸数据结构</li>
-<li><input disabled="" type="checkbox"> 刷算法</li>
-<li><input disabled="" type="checkbox"> 系统集成项目管理工程</li>
-<li><input disabled="" type="checkbox"> C++</li>
-</ul>
+        <h2 id="分析JDBC操作问题"><a href="#分析JDBC操作问题" class="headerlink" title="分析JDBC操作问题"></a>分析JDBC操作问题</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Connection connection = null;</span><br><span class="line">        PreparedStatement preparedStatement = null;</span><br><span class="line">        ResultSet resultSet = null;</span><br><span class="line">        try &#123;</span><br><span class="line">// 加载数据库驱动</span><br><span class="line">            Class.forName(&quot;com.mysql.jdbc.Driver&quot;);</span><br><span class="line">// 通过驱动管理类获取数据库链接</span><br><span class="line">            connection = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/mybatis?characterEncoding = utf-8&quot;, &quot; root&quot;, &quot;root&quot;);</span><br><span class="line">// 定义sql语句？表示占位符</span><br><span class="line">            String sql = &quot;select * from user where username = ?&quot;;</span><br><span class="line">// 获取预处理statement</span><br><span class="line">            preparedStatement = connection.prepareStatement(sql);</span><br><span class="line">// 设置参数，第⼀个参数为sql语句中参数的序号(从1开始)，第⼆个参数为设置的参数值</span><br><span class="line">            preparedStatement.setString(1, &quot;tom&quot;);</span><br><span class="line">// 向数据库发出sql执⾏查询，查询出结果集</span><br><span class="line">            resultSet = preparedStatement.executeQuery();</span><br><span class="line">// 遍历查询结果集</span><br><span class="line">            while (resultSet.next()) &#123;</span><br><span class="line">                int id = resultSet.getInt(&quot;id&quot;);</span><br><span class="line">                String username = resultSet.getString(&quot;username&quot;);</span><br><span class="line">// 封装User</span><br><span class="line">//                user.setId(id);</span><br><span class="line">//                user.setUsername(username);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(user);</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">// 释放资源</span><br><span class="line">            if (resultSet != null) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    resultSet.close();</span><br><span class="line">                &#125; catch (SQLException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (preparedStatement != null) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    preparedStatement.close();</span><br><span class="line">                &#125; catch (SQLException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (connection != null) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    connection.close();</span><br><span class="line">                &#125; catch (SQLException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JDBC问题总结"><a href="#JDBC问题总结" class="headerlink" title="JDBC问题总结"></a>JDBC问题总结</h2><p>原始jdbc开发存在的问题如下：</p>
+<ol>
+<li>数据库连接创建、释放频繁造成系统资源浪费，从⽽影响系统性能。</li>
+<li>Sql语句在代码中硬编码，造成代码不易维护，实际应⽤中sql变化的可能较⼤，sql变动需要改变java代码。</li>
+<li>使⽤preparedStatement向占有位符号传参数存在硬编码，因为sql语句的where条件不⼀定，可能多也可能少，修改sql还要修改代码，系统不易维护。</li>
+<li>对结果集解析存在硬编码(查询列名)，sql变化导致解析代码变化，系统不易维护，如果能将数据库,记录封装成pojo对象解析⽐较⽅便</li>
+</ol>
 
     </div>
 
@@ -257,6 +260,9 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mybatis/" rel="tag"># Mybatis</a>
+          </div>
 
         
 
@@ -264,12 +270,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/posts/2362a8ea/" rel="prev" title="链表">
-      <i class="fa fa-chevron-left"></i> 链表
+    <a href="/posts/e85d694a/" rel="prev" title="二叉树">
+      <i class="fa fa-chevron-left"></i> 二叉树
     </a></div>
       <div class="post-nav-item">
-    <a href="/posts/3594e15e/" rel="next" title="动态数组">
-      动态数组 <i class="fa fa-chevron-right"></i>
+    <a href="/posts/35f33c4c/" rel="next" title="手撕Mybatis--实现简单Mybatis框架">
+      手撕Mybatis--实现简单Mybatis框架 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -329,6 +335,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90JDBC%E6%93%8D%E4%BD%9C%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">分析JDBC操作问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDBC%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">JDBC问题总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

@@ -20,18 +20,20 @@
     var CONFIG = {"hostname":"www.itcode.net.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="沉淀、分享、成长~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="YangMeng&#39;Blog">
-<meta property="og:url" content="https://www.itcode.net.cn/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html">
+  <meta name="description" content="传统JDBC问题解决思路 使⽤数据库连接池初始化连接资源· 将sql语句抽取到xml配置⽂件中 使⽤反射、内省等底层技术，⾃动将实体与表进⾏属性与字段的⾃动映射  自定义框架设计 使用端  提供核⼼配置⽂件：sqlMapConfig.xml：存放数据源信息，引⼊mapper.xml：sql语句的配置⽂件信息  框架端  读取配置⽂件读取完成以后以流的形式存在，我们不能将读取到的配置信息以流的形式存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手撕Mybatis--实现简单Mybatis框架">
+<meta property="og:url" content="https://www.itcode.net.cn/posts/35f33c4c/index.html">
 <meta property="og:site_name" content="YangMeng&#39;Blog">
-<meta property="og:description" content="沉淀、分享、成长~">
+<meta property="og:description" content="传统JDBC问题解决思路 使⽤数据库连接池初始化连接资源· 将sql语句抽取到xml配置⽂件中 使⽤反射、内省等底层技术，⾃动将实体与表进⾏属性与字段的⾃动映射  自定义框架设计 使用端  提供核⼼配置⽂件：sqlMapConfig.xml：存放数据源信息，引⼊mapper.xml：sql语句的配置⽂件信息  框架端  读取配置⽂件读取完成以后以流的形式存在，我们不能将读取到的配置信息以流的形式存">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-10T15:13:29.000Z">
+<meta property="article:modified_time" content="2023-08-10T15:26:17.098Z">
 <meta property="article:author" content="yangmeng">
-<meta property="article:tag" content="IT | 编程 | 技术">
+<meta property="article:tag" content="Mybatis">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://www.itcode.net.cn/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+<link rel="canonical" href="https://www.itcode.net.cn/posts/35f33c4c/">
 
 
 <script id="page-configurations">
@@ -39,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>分类: 数据结构 | YangMeng'Blog</title>
+  <title>手撕Mybatis--实现简单Mybatis框架 | YangMeng'Blog</title>
   
 
 
@@ -187,111 +189,132 @@
         <div class="content-wrap">
           
 
-          <div class="content category">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">数据结构
-          <small>分类</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.itcode.net.cn/posts/35f33c4c/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yangmeng">
+      <meta itemprop="description" content=" 沉淀、分享、成长~">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YangMeng'Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          手撕Mybatis--实现简单Mybatis框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-08-10 23:13:29 / 修改时间：23:26:17" itemprop="dateCreated datePublished" datetime="2023-08-10T23:13:29+08:00">2023-08-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">源码分析</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2023</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2023-08-10T22:14:54+08:00"
-              content="2023-08-10">
-          08-10
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/posts/e85d694a/" itemprop="url">
-            <span itemprop="name">二叉树</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2023-08-10T19:37:24+08:00"
-              content="2023-08-10">
-          08-10
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/posts/b66774c1/" itemprop="url">
-            <span itemprop="name">循环队列</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2023-08-10T19:09:49+08:00"
-              content="2023-08-10">
-          08-10
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/posts/3594e15e/" itemprop="url">
-            <span itemprop="name">动态数组</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2023-08-08T22:51:22+08:00"
-              content="2023-08-08">
-          08-08
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/posts/2362a8ea/" itemprop="url">
-            <span itemprop="name">链表</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+        <h2 id="传统JDBC问题解决思路"><a href="#传统JDBC问题解决思路" class="headerlink" title="传统JDBC问题解决思路"></a>传统JDBC问题解决思路</h2><ol>
+<li>使⽤数据库连接池初始化连接资源·</li>
+<li>将sql语句抽取到xml配置⽂件中</li>
+<li>使⽤反射、内省等底层技术，⾃动将实体与表进⾏属性与字段的⾃动映射</li>
+</ol>
+<h2 id="自定义框架设计"><a href="#自定义框架设计" class="headerlink" title="自定义框架设计"></a>自定义框架设计</h2><ul>
+<li>使用端</li>
+</ul>
+<p>提供核⼼配置⽂件：sqlMapConfig.xml：存放数据源信息，引⼊mapper.xml：sql语句的配置⽂件信息</p>
+<ul>
+<li><p>框架端</p>
+<ul>
+<li><p>读取配置⽂件<br>读取完成以后以流的形式存在，我们不能将读取到的配置信息以流的形式存放在内存中，不好操作，可以创建javaBean来存储</p>
+<ul>
+<li>Configuration : 存放数据库基本信息、Map&lt;唯⼀标识，Mapper&gt; 唯⼀标识：namespace + “.”+ id</li>
+<li>MappedStatement：sql语句、statement类型、输⼊参数java类型、输出参数java类型</li>
+</ul>
+</li>
+<li><p>解析配置⽂件</p>
+<ul>
+<li>创建sqlSessionFactoryBuilder类：</li>
+</ul>
+<p>⽅法：sqlSessionFactory build()：第⼀：使⽤dom4j解析配置⽂件，将解析出来的内容封装到Configuration和MappedStatement中；第⼆：创建SqlSessionFactory的实现类DefaultSqlSession</p>
+</li>
+<li><p>创建SqlSessionFactory</p>
+</li>
+</ul>
+<p>⽅法：openSession() : 获取sqlSession接⼝的实现类实例对象</p>
+<ul>
+<li>创建sqlSession接⼝及实现类：主要封装crud⽅法</li>
+</ul>
+<p>⽅法：selectList(String statementId,Object param)：查询所有；</p>
+<p>​		   selectOne(String statementId,Object param)：查询单个。</p>
+</li>
+<li><p>涉及到的设计模式</p>
+<ul>
+<li>Builder构建者设计模式</li>
+<li>⼯⼚模式</li>
+<li>代理模式</li>
+</ul>
+</li>
+</ul>
+<h2 id="自定义框架的实现"><a href="#自定义框架的实现" class="headerlink" title="自定义框架的实现"></a>自定义框架的实现</h2><p>在使用短项目中创建配置文件</p>
+<p>创建sqlMapConfig.xml</p>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mybatis/" rel="tag"># Mybatis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/349665f2/" rel="prev" title="手撕Mybatis--分析JDBC操作问题">
+      <i class="fa fa-chevron-left"></i> 手撕Mybatis--分析JDBC操作问题
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
@@ -344,6 +367,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9FJDBC%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="nav-number">1.</span> <span class="nav-text">传统JDBC问题解决思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.</span> <span class="nav-text">自定义框架设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A1%86%E6%9E%B6%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">自定义框架的实现</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
