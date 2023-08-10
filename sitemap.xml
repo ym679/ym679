@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.itcode.net.cn/posts/3594e15e/</loc>
+    
+    <lastmod>2023-08-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.itcode.net.cn/posts/2362a8ea/</loc>
     
     <lastmod>2023-08-10</lastmod>
@@ -83,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://www.itcode.net.cn/repository/index.html</loc>
+    <loc>https://www.itcode.net.cn/books/index.html</loc>
     
     <lastmod>2023-07-21</lastmod>
     
@@ -92,7 +101,7 @@
   </url>
   
   <url>
-    <loc>https://www.itcode.net.cn/books/index.html</loc>
+    <loc>https://www.itcode.net.cn/repository/index.html</loc>
     
     <lastmod>2023-07-21</lastmod>
     
@@ -126,14 +135,14 @@
   </url>
   
   <url>
-    <loc>https://www.itcode.net.cn/tags/%E5%8D%95%E7%89%87%E6%9C%BA/</loc>
+    <loc>https://www.itcode.net.cn/tags/algorithms/</loc>
     <lastmod>2023-08-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.itcode.net.cn/tags/algorithms/</loc>
+    <loc>https://www.itcode.net.cn/tags/%E5%8D%95%E7%89%87%E6%9C%BA/</loc>
     <lastmod>2023-08-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -149,7 +158,7 @@
   </url>
   
   <url>
-    <loc>https://www.itcode.net.cn/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/</loc>
+    <loc>https://www.itcode.net.cn/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
     <lastmod>2023-08-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -163,7 +172,7 @@
   </url>
   
   <url>
-    <loc>https://www.itcode.net.cn/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
+    <loc>https://www.itcode.net.cn/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/</loc>
     <lastmod>2023-08-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
