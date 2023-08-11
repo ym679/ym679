@@ -229,46 +229,6 @@
       </tags>
   </entry>
   <entry>
-    <title>动态数组</title>
-    <url>/posts/3594e15e/</url>
-    <content><![CDATA[<h2 id="动态数组实现原理"><a href="#动态数组实现原理" class="headerlink" title="动态数组实现原理"></a>动态数组实现原理</h2><p>相较于大家都熟悉的普通数组，动态数组主要体现在两个方面，即数组扩容与数组缩减，综合体现如下：</p>
-<ul>
-<li>添加元素</li>
-</ul>
-<p>不局限于只在数组末尾添加，而是能够随意选择索引位置(只要不超过数组长度)</p>
-<ul>
-<li>删除元素</li>
-</ul>
-<p>同添加元素，也可根据索引进行选择</p>
-<ul>
-<li>数组扩容</li>
-</ul>
-<p>数组一旦装满元素，可触发数组扩容，即新建一个更长的数组，将原数组元素转移到新数组中，并将引用指向新数组，完成数组的变更；</p>
-<ul>
-<li>数组缩容</li>
-</ul>
-<p>如果数组元素相对总容量来说过少(例如数组元素个数小于数组容量的1&#x2F;4)，便可触发数组缩减，即新建一个更短的数组，并转移元素至新数组。</p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ul>
-<li>Array</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class Array&lt;E&gt; &#123;</span><br><span class="line">    private E[] data;       // 使用静态数组存放数组元素</span><br><span class="line">    private int size;       // 记录数组元素数量</span><br><span class="line"></span><br><span class="line">    public Array(int capacity) &#123;</span><br><span class="line">        this.data = (E[]) new Object[capacity];</span><br><span class="line">        this.size = 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getSize() &#123;</span><br><span class="line">        return size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Array() &#123;</span><br><span class="line">        this(10);   // 默认capacity为10</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组扩容/缩减</span><br><span class="line">    public void resize(int newCapacity) &#123;</span><br><span class="line">        // 新数组长度必须大于0</span><br><span class="line">        if (newCapacity &lt; 0) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;capacity must &gt; 0!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 创建新数组</span><br><span class="line">        E[] newData = (E[]) new Object[newCapacity];</span><br><span class="line">        // 将原数组元素放入新数组中</span><br><span class="line">        for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">            newData[i] = data[i];</span><br><span class="line">        &#125;</span><br><span class="line">        // 将引用指向新数组</span><br><span class="line">        data = newData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 在指定位置添加元素</span><br><span class="line">     * 指定位置处的元素需要向右侧移动一个单位</span><br><span class="line">     * @param index   索引</span><br><span class="line">     * @param element 要添加的元素</span><br><span class="line">     */</span><br><span class="line">    public void add(int index, E element) &#123;</span><br><span class="line">        if (index &lt; 0 || index &gt; size) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal index, index must &gt; 0 and &lt;= size!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 数组满员触发扩容</span><br><span class="line">        if (size == data.length) &#123;</span><br><span class="line">            resize(2 * data.length);  // 扩容为原数组的2倍</span><br><span class="line">        &#125;</span><br><span class="line">        // 从尾部开始，向右移动元素，直到index</span><br><span class="line">        for (int i = size - 1; i &gt;= index; i--) &#123;</span><br><span class="line">            data[i + 1] = data[i];</span><br><span class="line">        &#125;</span><br><span class="line">        // 添加元素</span><br><span class="line">        data[index] = element;</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组头部添加元素</span><br><span class="line">    public void addFirst(E element) &#123;</span><br><span class="line">        add(0, element);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组尾部添加元素</span><br><span class="line">    public void addLast(E element) &#123;</span><br><span class="line">        add(size, element);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 删除指定位置元素</span><br><span class="line">     * 通过向左移动一位，覆盖指定位置处的元素，实现删除元素(data[size - 1] = null)</span><br><span class="line">     * @param index 索引</span><br><span class="line">     */</span><br><span class="line">    public E remove(int index) &#123;</span><br><span class="line">        if (index &lt; 0 || index &gt; size) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal index, index must &gt; 0 and &lt; size!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 数组长度为0时抛出异常</span><br><span class="line">        if (size == 0) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Empty array!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        E removedElement = data[index];</span><br><span class="line">        // 向左移动元素</span><br><span class="line">        for (int i = index; i &lt; size - 1; i++) &#123;</span><br><span class="line">            data[i] = data[i + 1];</span><br><span class="line">        &#125;</span><br><span class="line">        // 将尾部空闲出的位置置为空，释放资源</span><br><span class="line">        data[size - 1] = null;</span><br><span class="line">        size--;</span><br><span class="line">        // size过小触发数组缩减</span><br><span class="line">        if (size == data.length / 4 &amp;&amp; data.length / 2 != 0) &#123;</span><br><span class="line">            resize(data.length / 2);</span><br><span class="line">        &#125;</span><br><span class="line">        return removedElement;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 删除头部元素</span><br><span class="line">    public E removeFirst() &#123;</span><br><span class="line">        return remove(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 删除尾部元素</span><br><span class="line">    public E removeLast() &#123;</span><br><span class="line">        return remove(size - 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 重写Override方法，自定义数组显示格式</span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        StringBuilder str = new StringBuilder();</span><br><span class="line">        // 显示数组的整体情况(长度、总容量)</span><br><span class="line">        str.append(String.format(&quot;Array: size = %d, capacity = %d\n[&quot;, size, data.length));</span><br><span class="line">        // 循环添加数组元素至str</span><br><span class="line">        for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">            str.append(data[i]);</span><br><span class="line">            if (i &lt; size - 1) &#123;</span><br><span class="line">                str.append(&quot;, &quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        str.append(&quot;]&quot;);</span><br><span class="line">        return str.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>ArrayTest</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class ArrayTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        // 添加10个元素</span><br><span class="line">        Array&lt;Integer&gt; arr = new Array&lt;&gt;();</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">            arr.add(i, i);</span><br><span class="line">        &#125;</span><br><span class="line">        // 查看数组当前状态</span><br><span class="line">        System.out.println(arr);</span><br><span class="line">        // 继续添加元素，观察是否扩容</span><br><span class="line">        arr.add(arr.getSize(), 7);</span><br><span class="line">        System.out.println(arr);</span><br><span class="line"></span><br><span class="line">        // 再删除6个元素，观察是否缩减</span><br><span class="line">        for (int i = 0; i &lt; 6; i++) &#123;</span><br><span class="line">            System.out.println(&quot;元素&quot; + arr.removeFirst() + &quot;已被删除！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(arr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>algorithms</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MAC（M1）配置51单片机环境</title>
     <url>/posts/cdcb5503/</url>
     <content><![CDATA[<h2 id="安装Rosetta2"><a href="#安装Rosetta2" class="headerlink" title="安装Rosetta2"></a>安装Rosetta2</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/usr/sbin/softwareupdate --install-rosetta --agree-to-license</span><br></pre></td></tr></table></figure>
@@ -358,10 +318,103 @@
       </tags>
   </entry>
   <entry>
+    <title>动态数组</title>
+    <url>/posts/3594e15e/</url>
+    <content><![CDATA[<h2 id="动态数组实现原理"><a href="#动态数组实现原理" class="headerlink" title="动态数组实现原理"></a>动态数组实现原理</h2><p>相较于大家都熟悉的普通数组，动态数组主要体现在两个方面，即数组扩容与数组缩减，综合体现如下：</p>
+<ul>
+<li>添加元素</li>
+</ul>
+<p>不局限于只在数组末尾添加，而是能够随意选择索引位置(只要不超过数组长度)</p>
+<ul>
+<li>删除元素</li>
+</ul>
+<p>同添加元素，也可根据索引进行选择</p>
+<ul>
+<li>数组扩容</li>
+</ul>
+<p>数组一旦装满元素，可触发数组扩容，即新建一个更长的数组，将原数组元素转移到新数组中，并将引用指向新数组，完成数组的变更；</p>
+<ul>
+<li>数组缩容</li>
+</ul>
+<p>如果数组元素相对总容量来说过少(例如数组元素个数小于数组容量的1&#x2F;4)，便可触发数组缩减，即新建一个更短的数组，并转移元素至新数组。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ul>
+<li>Array</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class Array&lt;E&gt; &#123;</span><br><span class="line">    private E[] data;       // 使用静态数组存放数组元素</span><br><span class="line">    private int size;       // 记录数组元素数量</span><br><span class="line"></span><br><span class="line">    public Array(int capacity) &#123;</span><br><span class="line">        this.data = (E[]) new Object[capacity];</span><br><span class="line">        this.size = 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getSize() &#123;</span><br><span class="line">        return size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Array() &#123;</span><br><span class="line">        this(10);   // 默认capacity为10</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组扩容/缩减</span><br><span class="line">    public void resize(int newCapacity) &#123;</span><br><span class="line">        // 新数组长度必须大于0</span><br><span class="line">        if (newCapacity &lt; 0) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;capacity must &gt; 0!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 创建新数组</span><br><span class="line">        E[] newData = (E[]) new Object[newCapacity];</span><br><span class="line">        // 将原数组元素放入新数组中</span><br><span class="line">        for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">            newData[i] = data[i];</span><br><span class="line">        &#125;</span><br><span class="line">        // 将引用指向新数组</span><br><span class="line">        data = newData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 在指定位置添加元素</span><br><span class="line">     * 指定位置处的元素需要向右侧移动一个单位</span><br><span class="line">     * @param index   索引</span><br><span class="line">     * @param element 要添加的元素</span><br><span class="line">     */</span><br><span class="line">    public void add(int index, E element) &#123;</span><br><span class="line">        if (index &lt; 0 || index &gt; size) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal index, index must &gt; 0 and &lt;= size!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 数组满员触发扩容</span><br><span class="line">        if (size == data.length) &#123;</span><br><span class="line">            resize(2 * data.length);  // 扩容为原数组的2倍</span><br><span class="line">        &#125;</span><br><span class="line">        // 从尾部开始，向右移动元素，直到index</span><br><span class="line">        for (int i = size - 1; i &gt;= index; i--) &#123;</span><br><span class="line">            data[i + 1] = data[i];</span><br><span class="line">        &#125;</span><br><span class="line">        // 添加元素</span><br><span class="line">        data[index] = element;</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组头部添加元素</span><br><span class="line">    public void addFirst(E element) &#123;</span><br><span class="line">        add(0, element);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组尾部添加元素</span><br><span class="line">    public void addLast(E element) &#123;</span><br><span class="line">        add(size, element);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 删除指定位置元素</span><br><span class="line">     * 通过向左移动一位，覆盖指定位置处的元素，实现删除元素(data[size - 1] = null)</span><br><span class="line">     * @param index 索引</span><br><span class="line">     */</span><br><span class="line">    public E remove(int index) &#123;</span><br><span class="line">        if (index &lt; 0 || index &gt; size) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal index, index must &gt; 0 and &lt; size!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 数组长度为0时抛出异常</span><br><span class="line">        if (size == 0) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Empty array!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        E removedElement = data[index];</span><br><span class="line">        // 向左移动元素</span><br><span class="line">        for (int i = index; i &lt; size - 1; i++) &#123;</span><br><span class="line">            data[i] = data[i + 1];</span><br><span class="line">        &#125;</span><br><span class="line">        // 将尾部空闲出的位置置为空，释放资源</span><br><span class="line">        data[size - 1] = null;</span><br><span class="line">        size--;</span><br><span class="line">        // size过小触发数组缩减</span><br><span class="line">        if (size == data.length / 4 &amp;&amp; data.length / 2 != 0) &#123;</span><br><span class="line">            resize(data.length / 2);</span><br><span class="line">        &#125;</span><br><span class="line">        return removedElement;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 删除头部元素</span><br><span class="line">    public E removeFirst() &#123;</span><br><span class="line">        return remove(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 删除尾部元素</span><br><span class="line">    public E removeLast() &#123;</span><br><span class="line">        return remove(size - 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 重写Override方法，自定义数组显示格式</span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        StringBuilder str = new StringBuilder();</span><br><span class="line">        // 显示数组的整体情况(长度、总容量)</span><br><span class="line">        str.append(String.format(&quot;Array: size = %d, capacity = %d\n[&quot;, size, data.length));</span><br><span class="line">        // 循环添加数组元素至str</span><br><span class="line">        for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">            str.append(data[i]);</span><br><span class="line">            if (i &lt; size - 1) &#123;</span><br><span class="line">                str.append(&quot;, &quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        str.append(&quot;]&quot;);</span><br><span class="line">        return str.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ArrayTest</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class ArrayTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        // 添加10个元素</span><br><span class="line">        Array&lt;Integer&gt; arr = new Array&lt;&gt;();</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">            arr.add(i, i);</span><br><span class="line">        &#125;</span><br><span class="line">        // 查看数组当前状态</span><br><span class="line">        System.out.println(arr);</span><br><span class="line">        // 继续添加元素，观察是否扩容</span><br><span class="line">        arr.add(arr.getSize(), 7);</span><br><span class="line">        System.out.println(arr);</span><br><span class="line"></span><br><span class="line">        // 再删除6个元素，观察是否缩减</span><br><span class="line">        for (int i = 0; i &lt; 6; i++) &#123;</span><br><span class="line">            System.out.println(&quot;元素&quot; + arr.removeFirst() + &quot;已被删除！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(arr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>algorithms</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>手撕Mybatis--实现简单Mybatis框架</title>
+    <url>/posts/35f33c4c/</url>
+    <content><![CDATA[<h2 id="传统JDBC问题解决思路"><a href="#传统JDBC问题解决思路" class="headerlink" title="传统JDBC问题解决思路"></a>传统JDBC问题解决思路</h2><ol>
+<li>使⽤数据库连接池初始化连接资源·</li>
+<li>将sql语句抽取到xml配置⽂件中</li>
+<li>使⽤反射、内省等底层技术，⾃动将实体与表进⾏属性与字段的⾃动映射</li>
+</ol>
+<h2 id="自定义框架设计"><a href="#自定义框架设计" class="headerlink" title="自定义框架设计"></a>自定义框架设计</h2><ul>
+<li>使用端</li>
+</ul>
+<p>​	核⼼配置⽂件，sqlMapConfig.xml：存放数据源信息，引⼊mapper.xml：sql语句的配置⽂件信息</p>
+<ul>
+<li><p>框架端</p>
+<ul>
+<li><p>读取配置⽂件，以流的形式存在，创建javaBean来存储</p>
+<ul>
+<li>Configuration : 存放数据库基本信息、Map&lt;唯⼀标识，Mapper&gt; 唯⼀标识：namespace + “.”+ id</li>
+<li>MappedStatement：sql语句、statement类型、输⼊参数java类型、输出参数java类型</li>
+</ul>
+</li>
+<li><p>解析配置⽂件</p>
+<ul>
+<li>创建sqlSessionFactoryBuilder类：</li>
+</ul>
+<p>⽅法：sqlSessionFactory build()：第⼀：使⽤dom4j解析配置⽂件，将解析出来的内容封装到Configuration和MappedStatement中；第⼆：创建SqlSessionFactory的实现类DefaultSqlSession</p>
+</li>
+<li><p>创建SqlSessionFactory</p>
+</li>
+</ul>
+<p>⽅法：openSession() : 获取sqlSession接⼝的实现类实例对象</p>
+<ul>
+<li>创建sqlSession接⼝及实现类：主要封装crud⽅法</li>
+</ul>
+<p>⽅法：selectList(String statementId,Object param)：查询所有；</p>
+<p>​		   selectOne(String statementId,Object param)：查询单个。</p>
+</li>
+<li><p>涉及到的设计模式</p>
+<ul>
+<li>Builder构建者设计模式</li>
+<li>⼯⼚模式</li>
+<li>代理模式</li>
+</ul>
+</li>
+</ul>
+<h2 id="自定义框架的实现"><a href="#自定义框架的实现" class="headerlink" title="自定义框架的实现"></a>自定义框架的实现</h2><p>创建sqlMapConfig.xml</p>
+]]></content>
+      <categories>
+        <category>源码分析</category>
+      </categories>
+      <tags>
+        <tag>Mybatis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>延迟队列</title>
     <url>/posts/c41f8085/</url>
-    <content><![CDATA[<p>延迟队列即DelayQueue是一个BlockingQueue（无阻塞队列），使用完全二叉树堆排序。在添加元素时</p>
-<h2 id="延迟队列说明及实现原理"><a href="#延迟队列说明及实现原理" class="headerlink" title="延迟队列说明及实现原理"></a>延迟队列说明及实现原理</h2><ul>
+    <content><![CDATA[<h2 id="延迟队列说明及实现原理"><a href="#延迟队列说明及实现原理" class="headerlink" title="延迟队列说明及实现原理"></a>延迟队列说明及实现原理</h2><ul>
 <li>是一个无阻塞队列（BlockingQueue）</li>
 <li>使用完全二叉堆结构</li>
 <li>添加元素时，延迟最小的元素放在队首</li>
@@ -431,60 +484,6 @@
       </categories>
       <tags>
         <tag>algorithms</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>手撕Mybatis--实现简单Mybatis框架</title>
-    <url>/posts/35f33c4c/</url>
-    <content><![CDATA[<h2 id="传统JDBC问题解决思路"><a href="#传统JDBC问题解决思路" class="headerlink" title="传统JDBC问题解决思路"></a>传统JDBC问题解决思路</h2><ol>
-<li>使⽤数据库连接池初始化连接资源·</li>
-<li>将sql语句抽取到xml配置⽂件中</li>
-<li>使⽤反射、内省等底层技术，⾃动将实体与表进⾏属性与字段的⾃动映射</li>
-</ol>
-<h2 id="自定义框架设计"><a href="#自定义框架设计" class="headerlink" title="自定义框架设计"></a>自定义框架设计</h2><ul>
-<li>使用端</li>
-</ul>
-<p>​	核⼼配置⽂件，sqlMapConfig.xml：存放数据源信息，引⼊mapper.xml：sql语句的配置⽂件信息</p>
-<ul>
-<li><p>框架端</p>
-<ul>
-<li><p>读取配置⽂件，以流的形式存在，创建javaBean来存储</p>
-<ul>
-<li>Configuration : 存放数据库基本信息、Map&lt;唯⼀标识，Mapper&gt; 唯⼀标识：namespace + “.”+ id</li>
-<li>MappedStatement：sql语句、statement类型、输⼊参数java类型、输出参数java类型</li>
-</ul>
-</li>
-<li><p>解析配置⽂件</p>
-<ul>
-<li>创建sqlSessionFactoryBuilder类：</li>
-</ul>
-<p>⽅法：sqlSessionFactory build()：第⼀：使⽤dom4j解析配置⽂件，将解析出来的内容封装到Configuration和MappedStatement中；第⼆：创建SqlSessionFactory的实现类DefaultSqlSession</p>
-</li>
-<li><p>创建SqlSessionFactory</p>
-</li>
-</ul>
-<p>⽅法：openSession() : 获取sqlSession接⼝的实现类实例对象</p>
-<ul>
-<li>创建sqlSession接⼝及实现类：主要封装crud⽅法</li>
-</ul>
-<p>⽅法：selectList(String statementId,Object param)：查询所有；</p>
-<p>​		   selectOne(String statementId,Object param)：查询单个。</p>
-</li>
-<li><p>涉及到的设计模式</p>
-<ul>
-<li>Builder构建者设计模式</li>
-<li>⼯⼚模式</li>
-<li>代理模式</li>
-</ul>
-</li>
-</ul>
-<h2 id="自定义框架的实现"><a href="#自定义框架的实现" class="headerlink" title="自定义框架的实现"></a>自定义框架的实现</h2><p>创建sqlMapConfig.xml</p>
-]]></content>
-      <categories>
-        <category>源码分析</category>
-      </categories>
-      <tags>
-        <tag>Mybatis</tag>
       </tags>
   </entry>
   <entry>
