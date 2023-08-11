@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.itcode.net.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="延迟队列即DelayQueue是一个BlockingQueue（无阻塞队列），使用完全二叉树堆排序。在添加元素时 延迟队列说明及实现原理 是一个无阻塞队列（BlockingQueue） 使用完全二叉堆结构 添加元素时，延迟最小的元素放在队首   二叉堆结构是一种完整或近似二叉树的结构，下文以PriorityQueue实现平衡二叉堆结构，数据以队列形式存储。其父子节点关系如下：  父子节点索引关系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="延迟队列">
+<meta property="og:url" content="https://www.itcode.net.cn/posts/c41f8085/index.html">
+<meta property="og:site_name" content="YangMeng&#39;Blog">
+<meta property="og:description" content="延迟队列即DelayQueue是一个BlockingQueue（无阻塞队列），使用完全二叉树堆排序。在添加元素时 延迟队列说明及实现原理 是一个无阻塞队列（BlockingQueue） 使用完全二叉堆结构 添加元素时，延迟最小的元素放在队首   二叉堆结构是一种完整或近似二叉树的结构，下文以PriorityQueue实现平衡二叉堆结构，数据以队列形式存储。其父子节点关系如下：  父子节点索引关系">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.itcode.net.cn/blog/202308112155452.png">
+<meta property="og:image" content="https://img.itcode.net.cn/blog/202308112215882.png">
+<meta property="og:image" content="https://img.itcode.net.cn/blog/202308112216557.png">
+<meta property="article:published_time" content="2023-08-11T13:34:32.000Z">
+<meta property="article:modified_time" content="2023-08-11T15:04:50.519Z">
+<meta property="article:author" content="yangmeng">
+<meta property="article:tag" content="algorithms">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.itcode.net.cn/blog/202308112155452.png">
+
+<link rel="canonical" href="https://www.itcode.net.cn/posts/c41f8085/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>延迟队列 | YangMeng'Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="YangMeng'Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">YangMeng'Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.itcode.net.cn/posts/c41f8085/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yangmeng">
+      <meta itemprop="description" content=" 沉淀、分享、成长~">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YangMeng'Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          延迟队列
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-08-11 21:34:32 / 修改时间：23:04:50" itemprop="dateCreated datePublished" datetime="2023-08-11T21:34:32+08:00">2023-08-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>延迟队列即DelayQueue是一个BlockingQueue（无阻塞队列），使用完全二叉树堆排序。在添加元素时</p>
+<h2 id="延迟队列说明及实现原理"><a href="#延迟队列说明及实现原理" class="headerlink" title="延迟队列说明及实现原理"></a>延迟队列说明及实现原理</h2><ul>
+<li>是一个无阻塞队列（BlockingQueue）</li>
+<li>使用完全二叉堆结构</li>
+<li>添加元素时，延迟最小的元素放在队首</li>
+</ul>
+<p><img src="https://img.itcode.net.cn/blog/202308112155452.png" alt="image-20230811215548434"></p>
+<h3 id="二叉堆结构"><a href="#二叉堆结构" class="headerlink" title="二叉堆结构"></a>二叉堆结构</h3><p>是一种完整或近似二叉树的结构，下文以PriorityQueue实现平衡二叉堆结构，数据以队列形式存储。其父子节点关系如下：</p>
+<ul>
+<li>父子节点索引关系<ul>
+<li>父节点为queue[n]，左子节点则为queue[2n+1]，右子节点为queue[2n+2]</li>
+<li>任意子节点的父节点位置都是(n-1)&gt;&gt;&gt;1，相当于减1后除2取整</li>
+</ul>
+</li>
+<li>节点间大小关系<ul>
+<li>父节点小于等于任意子节点</li>
+<li>同一层的两个子节点大小不需要维护，仅需在弹出元素时候进行判断</li>
+</ul>
+</li>
+<li>子叶节点与非子叶节点<ul>
+<li>一个长度为size的优先队列，当index &gt;&#x3D; size &gt;&gt;&gt; 1时，该节点为叶子节点，否则为非叶子节点</li>
+</ul>
+</li>
+</ul>
+<h4 id="入队"><a href="#入队" class="headerlink" title="入队"></a>入队</h4><p><img src="https://img.itcode.net.cn/blog/202308112215882.png" alt="image-20230811221525281"></p>
+<h4 id="出队"><a href="#出队" class="headerlink" title="出队"></a>出队</h4><p><img src="https://img.itcode.net.cn/blog/202308112216557.png" alt="image-20230811221615428"></p>
+<h2 id="延迟队列的实现"><a href="#延迟队列的实现" class="headerlink" title="延迟队列的实现"></a>延迟队列的实现</h2><ul>
+<li>Queue 单端队列接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public interface Queue&lt;E&gt; &#123;</span><br><span class="line">    boolean add(E e);</span><br><span class="line"></span><br><span class="line">    boolean offer(E e);</span><br><span class="line"></span><br><span class="line">    E poll();</span><br><span class="line"></span><br><span class="line">    E peek();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Deque 双端队列</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public interface Deque&lt;E&gt; extends Queue&lt;E&gt; &#123;</span><br><span class="line">    void addFirst(E e);</span><br><span class="line"></span><br><span class="line">    void addLast(E e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>BlockingQueue 阻塞队列接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface BlockingQueue&lt;E&gt; extends Queue&lt;E&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Delayed 延迟队列接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface Delayed extends Comparable&lt;Delayed&gt;&#123;</span><br><span class="line">    long getDelay(TimeUnit unit);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>PriorityQueue 优先队列</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line">public class PriorityQueue&lt;E&gt; implements Queue&lt;E&gt; &#123;</span><br><span class="line">    private Logger logger = LoggerFactory.getLogger(PriorityQueue.class);</span><br><span class="line"></span><br><span class="line">    private static final int DEFAULT_INITIAL_CAPACITY = 11;</span><br><span class="line"></span><br><span class="line">    transient Object[] queue;</span><br><span class="line"></span><br><span class="line">    private int size = 0;</span><br><span class="line"></span><br><span class="line">    public PriorityQueue() &#123;</span><br><span class="line">        queue = new Object[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean offer(E e) &#123;</span><br><span class="line">        if (e == null) &#123;</span><br><span class="line">            throw new NullPointerException();</span><br><span class="line">        &#125;</span><br><span class="line">        int i = size;</span><br><span class="line">        if (i &gt;= queue.length) &#123;</span><br><span class="line">            grow(i + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        size = i + 1;</span><br><span class="line">        if (i == 0) &#123;</span><br><span class="line">            queue[0] = e;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            siftUp(i, e);</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void grow(int minCapacity) &#123;</span><br><span class="line">        int oldCapacity = queue.length;</span><br><span class="line">        // Double size if small; else grow by 50%</span><br><span class="line">        int newCapacity = oldCapacity + ((oldCapacity &lt; 64) ?</span><br><span class="line">                (oldCapacity + 2) :</span><br><span class="line">                (oldCapacity &gt;&gt; 1));</span><br><span class="line">        // overflow-conscious code</span><br><span class="line">        if (newCapacity - (Integer.MAX_VALUE - 8) &gt; 0) &#123;</span><br><span class="line">            newCapacity = (minCapacity &gt; Integer.MAX_VALUE - 8) ?</span><br><span class="line">                    Integer.MAX_VALUE :</span><br><span class="line">                    Integer.MAX_VALUE - 8;</span><br><span class="line">        &#125;</span><br><span class="line">        queue = Arrays.copyOf(queue, newCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void siftUp(int k, E x) &#123;</span><br><span class="line">        siftUpComparable(k, x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    private void siftUpComparable(int k, E x) &#123;</span><br><span class="line">        Comparable&lt;? super E&gt; key = (Comparable&lt;? super E&gt;) x;</span><br><span class="line">        logger.info(&quot;【入队】元素：&#123;&#125; 当前队列：&#123;&#125;&quot;, JSON.toJSONString(key), JSON.toJSONString(queue));</span><br><span class="line">        while (k &gt; 0) &#123;</span><br><span class="line">            // 获取父节点Idx，相当于除以2</span><br><span class="line">            int parent = (k - 1) &gt;&gt;&gt; 1;</span><br><span class="line">            logger.info(&quot;【入队】寻找当前节点的父节点位置。k：&#123;&#125; parent：&#123;&#125;&quot;, k, parent);</span><br><span class="line">            Object e = queue[parent];</span><br><span class="line">            // 如果当前位置元素，大于父节点元素，则退出循环</span><br><span class="line">            if (key.compareTo((E) e) &gt;= 0) &#123;</span><br><span class="line">                logger.info(&quot;【入队】值比对，父节点：&#123;&#125; 目标节点：&#123;&#125;&quot;, JSON.toJSONString(e), JSON.toJSONString(key));</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            // 相反父节点位置大于当前位置元素，则进行替换</span><br><span class="line">            logger.info(&quot;【入队】替换过程，父子节点位置替换，继续循环。父节点值：&#123;&#125; 存放到位置：&#123;&#125;&quot;, JSON.toJSONString(e), k);</span><br><span class="line">            queue[k] = e;</span><br><span class="line">            k = parent;</span><br><span class="line">        &#125;</span><br><span class="line">        queue[k] = key;</span><br><span class="line">        logger.info(&quot;【入队】完成 Idx：&#123;&#125; Val：&#123;&#125; \r\n当前队列：&#123;&#125; \r\n&quot;, k, JSON.toJSONString(key), JSON.toJSONString(queue));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean add(E e) &#123;</span><br><span class="line">        return offer(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    @Override</span><br><span class="line">    public E poll() &#123;</span><br><span class="line">        if (size == 0) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        int s = --size;</span><br><span class="line">        E result = (E) queue[0];</span><br><span class="line">        E x = (E) queue[s];</span><br><span class="line">        queue[s] = null;</span><br><span class="line">        if (s != 0) &#123;</span><br><span class="line">            siftDown(0, x);</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void siftDown(int k, E x) &#123;</span><br><span class="line">        siftDownComparable(k, x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    private void siftDownComparable(int k, E x) &#123;</span><br><span class="line">        Comparable&lt;? super E&gt; key = (Comparable&lt;? super E&gt;) x;</span><br><span class="line">        // 先找出中间件节点</span><br><span class="line">        int half = size &gt;&gt;&gt; 1;</span><br><span class="line">        while (k &lt; half) &#123;</span><br><span class="line">            // 找到左子节点和右子节点，两个节点进行比较，找出最大的值</span><br><span class="line">            int child = (k &lt;&lt; 1) + 1;</span><br><span class="line">            Object c = queue[child];</span><br><span class="line">            int right = child + 1;</span><br><span class="line">            // 左子节点与右子节点比较，取最小的节点</span><br><span class="line">            if (right &lt; size &amp;&amp; ((Comparable&lt;? super E&gt;) c).compareTo((E) queue[right]) &gt; 0) &#123;</span><br><span class="line">                logger.info(&quot;【出队】左右子节点比对，获取最小值。left：&#123;&#125; right：&#123;&#125;&quot;, JSON.toJSONString(c), JSON.toJSONString(queue[right]));</span><br><span class="line">                c = queue[child = right];</span><br><span class="line">            &#125;</span><br><span class="line">            // 目标值与c比较，当目标值小于c值，退出循环。说明此时目标值所在位置适合，迁移完成。</span><br><span class="line">            if (key.compareTo((E) c) &lt;= 0) &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            // 目标值小于c值，位置替换，继续比较</span><br><span class="line">            logger.info(&quot;【出队】替换过程，节点的值比对。上节点：&#123;&#125; 下节点：&#123;&#125; 位置替换&quot;, JSON.toJSONString(queue[k]), JSON.toJSONString(c));</span><br><span class="line">            queue[k] = c;</span><br><span class="line">            k = child;</span><br><span class="line">        &#125;</span><br><span class="line">        // 把目标值放到对应位置</span><br><span class="line">        logger.info(&quot;【出队】替换结果，最终更换位置。Idx：&#123;&#125; Val：&#123;&#125;&quot;, k, JSON.toJSONString(key));</span><br><span class="line">        queue[k] = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    @Override</span><br><span class="line">    public E peek() &#123;</span><br><span class="line">        return (size == 0) ? null : (E) queue[0];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>DelayQueue 延迟队列</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">public class DelayQueue&lt;E  extends Delayed&gt; implements BlockingQueue&lt;E&gt;&#123;</span><br><span class="line">    private final transient ReentrantLock lock = new ReentrantLock();</span><br><span class="line">    private final PriorityQueue&lt;E&gt; q = new PriorityQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    private final Condition available = lock.newCondition();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean add(E e) &#123;</span><br><span class="line">        return offer(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean offer(E e) &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            q.offer(e);</span><br><span class="line">            if (q.peek() == e) &#123;</span><br><span class="line">                available.signal();</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public E poll() &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            E first = q.peek();</span><br><span class="line">            if (first == null || first.getDelay(NANOSECONDS) &gt; 0) &#123;</span><br><span class="line">                return null;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                return q.poll();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public E peek() &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            return q.peek();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试代码 QueueTest</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">public class QueueTest &#123;</span><br><span class="line">    private final Logger logger = LoggerFactory.getLogger(QueueTest.class);</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void test_queue() throws InterruptedException &#123;</span><br><span class="line">        Queue&lt;Job&gt; queue = new DelayQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        queue.add(new Job(&quot;1号&quot;, 1000L));</span><br><span class="line">        queue.add(new Job(&quot;3号&quot;, 3000L));</span><br><span class="line">        queue.add(new Job(&quot;5号&quot;, 5000L));</span><br><span class="line">        queue.add(new Job(&quot;11号&quot;, 11000L));</span><br><span class="line">        queue.add(new Job(&quot;4号&quot;, 4000L));</span><br><span class="line">        queue.add(new Job(&quot;6号&quot;, 6000L));</span><br><span class="line">        queue.add(new Job(&quot;7号&quot;, 7000L));</span><br><span class="line">        queue.add(new Job(&quot;12号&quot;, 12000L));</span><br><span class="line">        queue.add(new Job(&quot;15号&quot;, 15000L));</span><br><span class="line">        queue.add(new Job(&quot;10号&quot;, 10000L));</span><br><span class="line">        queue.add(new Job(&quot;9号&quot;, 9000L));</span><br><span class="line">        queue.add(new Job(&quot;8号&quot;, 8000L));</span><br><span class="line"></span><br><span class="line">        while (true) &#123;</span><br><span class="line">            Job poll = queue.poll();</span><br><span class="line">            if (null == poll) &#123;</span><br><span class="line">                Thread.sleep(10);</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            logger.info(poll.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static class Job implements Delayed &#123;</span><br><span class="line"></span><br><span class="line">        private final String name;</span><br><span class="line">        private final Long begin;</span><br><span class="line">        private final Long delayTime;</span><br><span class="line"></span><br><span class="line">        public Job(String name, Long delayTime) &#123;</span><br><span class="line">            this.name = name;</span><br><span class="line">            this.begin = System.currentTimeMillis();</span><br><span class="line">            this.delayTime = delayTime;//延时时长</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public long getDelay(TimeUnit unit) &#123;</span><br><span class="line">            return unit.convert(begin + delayTime - System.currentTimeMillis(), TimeUnit.MICROSECONDS);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public String getName() &#123;</span><br><span class="line">            return name;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public int compareTo(Delayed o) &#123;</span><br><span class="line">            Job job = (Job) o;</span><br><span class="line">            return (int) (this.getDelay(TimeUnit.MICROSECONDS) - job.getDelay(TimeUnit.MICROSECONDS));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/algorithms/" rel="tag"># algorithms</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/35f33c4c/" rel="prev" title="手撕Mybatis--实现简单Mybatis框架">
+      <i class="fa fa-chevron-left"></i> 手撕Mybatis--实现简单Mybatis框架
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%E8%AF%B4%E6%98%8E%E5%8F%8A%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">延迟队列说明及实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E5%A0%86%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">二叉堆结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A5%E9%98%9F"><span class="nav-number">1.1.1.</span> <span class="nav-text">入队</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BA%E9%98%9F"><span class="nav-number">1.1.2.</span> <span class="nav-text">出队</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">延迟队列的实现</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yangmeng"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">yangmeng</p>
+  <div class="site-description" itemprop="description"> 沉淀、分享、成长~</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:y_m12@qq.com" title="E-Mail → mailto:y_m12@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yangmeng</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+</body>
+</html>
