@@ -130,7 +130,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">10</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a>
 
   </li>
         <li class="menu-item menu-item-about">
@@ -193,6 +193,93 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.itcode.net.cn/posts/e41f7f44/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yangmeng">
+      <meta itemprop="description" content=" 沉淀、分享、成长~">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YangMeng'Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/e41f7f44/" class="post-title-link" itemprop="url">字典树Tire</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-08-14 22:46:03 / 修改时间：22:54:16" itemprop="dateCreated datePublished" datetime="2023-08-14T22:46:03+08:00">2023-08-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="字典树数据结构"><a href="#字典树数据结构" class="headerlink" title="字典树数据结构"></a>字典树数据结构</h2><p>是一种搜索树，一种已排序的数据结构，通常用于存储动态集或键为字符串的关联数组。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。</p>
+<p><img src="https://img.itcode.net.cn/blog/202308142249820.png" alt="image-20230814224935665"></p>
+<ul>
+<li>这是一个把 battle 单词字符串，按照字母拆分到字典树进行存放的图。</li>
+<li>键标注在节点中，值标注在节点之下。每一个完整的英文单词对应一个特定的整数。也就是26个字母对应的 ASCII 转换后的值。</li>
+</ul>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>字典树字母的存放有26个，也就是说在实现的过程中，每一个节点的分支都有26个槽位用来存放可能出现的字母组合。同理如果是数字树的话就是10个数字的组合，每个字典树上的节点对应的分支则有10个操作存放可能出现组合的数字。</p>
+<h3 id="树枝节点"><a href="#树枝节点" class="headerlink" title="树枝节点"></a>树枝节点</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class TrieNode &#123;</span><br><span class="line"></span><br><span class="line">    /** 形成一个链 */</span><br><span class="line">    public TrieNode[] slot = new TrieNode[26];</span><br><span class="line"></span><br><span class="line">    /** 字母 */</span><br><span class="line">    public char c;</span><br><span class="line"></span><br><span class="line">    /** 单词：数量 &gt; 0 表示一个单词 */</span><br><span class="line">    public boolean isWord;</span><br><span class="line"></span><br><span class="line">    /** 前缀 */</span><br><span class="line">    public int prefix;</span><br><span class="line"></span><br><span class="line">    /** 单词：具体的一个单词字符串 */</span><br><span class="line">    public String word;</span><br><span class="line"></span><br><span class="line">    /** 解释：单词的注释说明 */</span><br><span class="line">    public String explain;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>字典的树的节点需要包括此节点内嵌的关联节点，之后是节点的字母、到此字母是否为单词、单词的前缀、单词字符串和当前单词的非必要注释。</li>
+</ul>
+<h3 id="插入元素"><a href="#插入元素" class="headerlink" title="插入元素"></a>插入元素</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/e41f7f44/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.itcode.net.cn/posts/af55460a/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -218,7 +305,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-08-13 19:08:29 / 修改时间：22:02:06" itemprop="dateCreated datePublished" datetime="2023-08-13T19:08:29+08:00">2023-08-13</time>
+              <time title="创建时间：2023-08-13 19:08:29 / 修改时间：22:02:12" itemprop="dateCreated datePublished" datetime="2023-08-13T19:08:29+08:00">2023-08-13</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1089,103 +1176,11 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.itcode.net.cn/posts/cdcb5503/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yangmeng">
-      <meta itemprop="description" content=" 沉淀、分享、成长~">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="YangMeng'Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/cdcb5503/" class="post-title-link" itemprop="url">MAC（M1）配置51单片机环境</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-07-25 22:58:29" itemprop="dateCreated datePublished" datetime="2023-07-25T22:58:29+08:00">2023-07-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-10 19:05:32" itemprop="dateModified" datetime="2023-08-10T19:05:32+08:00">2023-08-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">嵌入式</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="安装Rosetta2"><a href="#安装Rosetta2" class="headerlink" title="安装Rosetta2"></a>安装Rosetta2</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/sbin/softwareupdate --install-rosetta --agree-to-license</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="安装Homebrew"><a href="#安装Homebrew" class="headerlink" title="安装Homebrew"></a>安装Homebrew</h2><p>使用Rosetta2安装Homebrew</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arch -x86_64 /bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)&quot;</span><br><span class="line"></span><br><span class="line">#在安装或更新应用时使用下面的命令即可：arch -x86_64 brew install &lt;package&gt;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="编译器sdcc"><a href="#编译器sdcc" class="headerlink" title="编译器sdcc"></a><strong>编译器sdcc</strong></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">arch -x86_64 brew install  sdcc</span><br><span class="line"></span><br><span class="line">#校验是否安装成功</span><br><span class="line">sdcc -version</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="安装CH341驱动"><a href="#安装CH341驱动" class="headerlink" title="安装CH341驱动"></a><strong>安装CH341驱动</strong></h2><p>为让开发版上的USB转串口模块成功连接到Mac上，我们需要CH341驱动来为Mac系统驱动</p>
-<p> 下载地址：<a target="_blank" rel="noopener" href="http://www.wch.cn/download/CH341SER_MAC_ZIP.html">http://www.wch.cn/download/CH341SER_MAC_ZIP.html</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/cdcb5503/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -1252,7 +1247,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

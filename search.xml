@@ -57,135 +57,6 @@
       </tags>
   </entry>
   <entry>
-    <title>动态数组</title>
-    <url>/posts/3594e15e/</url>
-    <content><![CDATA[<h2 id="动态数组实现原理"><a href="#动态数组实现原理" class="headerlink" title="动态数组实现原理"></a>动态数组实现原理</h2><p>相较于大家都熟悉的普通数组，动态数组主要体现在两个方面，即数组扩容与数组缩减，综合体现如下：</p>
-<ul>
-<li>添加元素</li>
-</ul>
-<p>不局限于只在数组末尾添加，而是能够随意选择索引位置(只要不超过数组长度)</p>
-<ul>
-<li>删除元素</li>
-</ul>
-<p>同添加元素，也可根据索引进行选择</p>
-<ul>
-<li>数组扩容</li>
-</ul>
-<p>数组一旦装满元素，可触发数组扩容，即新建一个更长的数组，将原数组元素转移到新数组中，并将引用指向新数组，完成数组的变更；</p>
-<ul>
-<li>数组缩容</li>
-</ul>
-<p>如果数组元素相对总容量来说过少(例如数组元素个数小于数组容量的1&#x2F;4)，便可触发数组缩减，即新建一个更短的数组，并转移元素至新数组。</p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ul>
-<li>Array</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class Array&lt;E&gt; &#123;</span><br><span class="line">    private E[] data;       // 使用静态数组存放数组元素</span><br><span class="line">    private int size;       // 记录数组元素数量</span><br><span class="line"></span><br><span class="line">    public Array(int capacity) &#123;</span><br><span class="line">        this.data = (E[]) new Object[capacity];</span><br><span class="line">        this.size = 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getSize() &#123;</span><br><span class="line">        return size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Array() &#123;</span><br><span class="line">        this(10);   // 默认capacity为10</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组扩容/缩减</span><br><span class="line">    public void resize(int newCapacity) &#123;</span><br><span class="line">        // 新数组长度必须大于0</span><br><span class="line">        if (newCapacity &lt; 0) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;capacity must &gt; 0!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 创建新数组</span><br><span class="line">        E[] newData = (E[]) new Object[newCapacity];</span><br><span class="line">        // 将原数组元素放入新数组中</span><br><span class="line">        for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">            newData[i] = data[i];</span><br><span class="line">        &#125;</span><br><span class="line">        // 将引用指向新数组</span><br><span class="line">        data = newData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 在指定位置添加元素</span><br><span class="line">     * 指定位置处的元素需要向右侧移动一个单位</span><br><span class="line">     * @param index   索引</span><br><span class="line">     * @param element 要添加的元素</span><br><span class="line">     */</span><br><span class="line">    public void add(int index, E element) &#123;</span><br><span class="line">        if (index &lt; 0 || index &gt; size) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal index, index must &gt; 0 and &lt;= size!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 数组满员触发扩容</span><br><span class="line">        if (size == data.length) &#123;</span><br><span class="line">            resize(2 * data.length);  // 扩容为原数组的2倍</span><br><span class="line">        &#125;</span><br><span class="line">        // 从尾部开始，向右移动元素，直到index</span><br><span class="line">        for (int i = size - 1; i &gt;= index; i--) &#123;</span><br><span class="line">            data[i + 1] = data[i];</span><br><span class="line">        &#125;</span><br><span class="line">        // 添加元素</span><br><span class="line">        data[index] = element;</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组头部添加元素</span><br><span class="line">    public void addFirst(E element) &#123;</span><br><span class="line">        add(0, element);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组尾部添加元素</span><br><span class="line">    public void addLast(E element) &#123;</span><br><span class="line">        add(size, element);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 删除指定位置元素</span><br><span class="line">     * 通过向左移动一位，覆盖指定位置处的元素，实现删除元素(data[size - 1] = null)</span><br><span class="line">     * @param index 索引</span><br><span class="line">     */</span><br><span class="line">    public E remove(int index) &#123;</span><br><span class="line">        if (index &lt; 0 || index &gt; size) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal index, index must &gt; 0 and &lt; size!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 数组长度为0时抛出异常</span><br><span class="line">        if (size == 0) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Empty array!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        E removedElement = data[index];</span><br><span class="line">        // 向左移动元素</span><br><span class="line">        for (int i = index; i &lt; size - 1; i++) &#123;</span><br><span class="line">            data[i] = data[i + 1];</span><br><span class="line">        &#125;</span><br><span class="line">        // 将尾部空闲出的位置置为空，释放资源</span><br><span class="line">        data[size - 1] = null;</span><br><span class="line">        size--;</span><br><span class="line">        // size过小触发数组缩减</span><br><span class="line">        if (size == data.length / 4 &amp;&amp; data.length / 2 != 0) &#123;</span><br><span class="line">            resize(data.length / 2);</span><br><span class="line">        &#125;</span><br><span class="line">        return removedElement;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 删除头部元素</span><br><span class="line">    public E removeFirst() &#123;</span><br><span class="line">        return remove(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 删除尾部元素</span><br><span class="line">    public E removeLast() &#123;</span><br><span class="line">        return remove(size - 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 重写Override方法，自定义数组显示格式</span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        StringBuilder str = new StringBuilder();</span><br><span class="line">        // 显示数组的整体情况(长度、总容量)</span><br><span class="line">        str.append(String.format(&quot;Array: size = %d, capacity = %d\n[&quot;, size, data.length));</span><br><span class="line">        // 循环添加数组元素至str</span><br><span class="line">        for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">            str.append(data[i]);</span><br><span class="line">            if (i &lt; size - 1) &#123;</span><br><span class="line">                str.append(&quot;, &quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        str.append(&quot;]&quot;);</span><br><span class="line">        return str.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>ArrayTest</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class ArrayTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        // 添加10个元素</span><br><span class="line">        Array&lt;Integer&gt; arr = new Array&lt;&gt;();</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">            arr.add(i, i);</span><br><span class="line">        &#125;</span><br><span class="line">        // 查看数组当前状态</span><br><span class="line">        System.out.println(arr);</span><br><span class="line">        // 继续添加元素，观察是否扩容</span><br><span class="line">        arr.add(arr.getSize(), 7);</span><br><span class="line">        System.out.println(arr);</span><br><span class="line"></span><br><span class="line">        // 再删除6个元素，观察是否缩减</span><br><span class="line">        for (int i = 0; i &lt; 6; i++) &#123;</span><br><span class="line">            System.out.println(&quot;元素&quot; + arr.removeFirst() + &quot;已被删除！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(arr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>algorithms</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>二叉树</title>
-    <url>/posts/e85d694a/</url>
-    <content><![CDATA[<h2 id="二叉树实现原理"><a href="#二叉树实现原理" class="headerlink" title="二叉树实现原理"></a>二叉树实现原理</h2><ul>
-<li>每个节点最多只有2两个子节点</li>
-<li>遍历元素口诀：前序遍历，根-&gt;左-&gt;右、中序遍历，左-&gt;根-&gt;右、后序遍历，左-&gt;右-&gt;根</li>
-<li>排序机制：依次从根节点往下比较，小于当前节点值则走左子节点，大于当前节点值则走右子节点，然后用中序遍历</li>
-</ul>
-<p>下面对一组数字进行排序：4、2、1、5、3、6，排序机制添加元素（箭头为中序排序顺序），结果如下图</p>
-<p><img src="https://img.itcode.net.cn/blog/202308102217969.png" alt="image-20230810221716805"></p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ul>
-<li>Tree</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface Tree&lt;E&gt; &#123;</span><br><span class="line"></span><br><span class="line">    public boolean add(E e);</span><br><span class="line"></span><br><span class="line">    public void sort(List&lt;E&gt; list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>BinaryTreeSort</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class BinaryTreeSort implements Tree&lt;Integer&gt; &#123;</span><br><span class="line">    // 根节点</span><br><span class="line">    private Node&lt;Integer&gt; root;</span><br><span class="line"></span><br><span class="line">    public BinaryTreeSort() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 依次从根节点往下比较，小于当前节点值则走左子节点，大于当前节点值则走右子节点</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public boolean add(Integer i) &#123;</span><br><span class="line">        Node&lt;Integer&gt; node = new Node&lt;&gt;(i);</span><br><span class="line">        // 根节点不存在</span><br><span class="line">        if (root == null) &#123;</span><br><span class="line">            root = node;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        Node&lt;Integer&gt; newNode = new Node&lt;&gt;(i, null, null);</span><br><span class="line">        Node&lt;Integer&gt; parent = parent(null, i);</span><br><span class="line">        if (Integer.compare(i, parent.value) == -1) &#123;</span><br><span class="line">            parent.left = newNode;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            parent.right = newNode;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 利用中序遍历来排序</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void sort(List&lt;Integer&gt; list) &#123;</span><br><span class="line">        list.forEach(v -&gt; &#123;</span><br><span class="line">            add(v);</span><br><span class="line">        &#125;);</span><br><span class="line">        List&lt;Integer&gt; sortList = new ArrayList&lt;&gt;();</span><br><span class="line">        ldr(root, sortList);</span><br><span class="line">        System.out.println(&quot;sortList: &quot;+ sortList.stream().map(v -&gt; String.valueOf(v)).collect(Collectors.joining(&quot;,&quot;)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 递归计算双亲位置</span><br><span class="line">     * 当前节点的子节点不存在时，则当前节点为其双亲</span><br><span class="line">     */</span><br><span class="line">    private Node&lt;Integer&gt; parent(Node&lt;Integer&gt; node, Integer i) &#123;</span><br><span class="line">        Node&lt;Integer&gt; parent = node == null ? root : node;</span><br><span class="line">        if (Integer.compare(i, parent.value) == -1) &#123;</span><br><span class="line">            return parent.left == null ? parent : parent(parent.left, i);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return parent.right == null ? parent : parent(parent.right, i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 前序遍历，根-&gt;左-&gt;右</span><br><span class="line">     */</span><br><span class="line">    private void rld(Node&lt;Integer&gt; node, List&lt;Integer&gt; sortList) &#123;</span><br><span class="line">        if (node != null) &#123;</span><br><span class="line">            sortList.add(node.value);</span><br><span class="line">            rld(node.left, sortList);</span><br><span class="line">            rld(node.right, sortList);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 中序遍历，左-&gt;根-&gt;右</span><br><span class="line">     */</span><br><span class="line">    private void ldr(Node&lt;Integer&gt; node, List&lt;Integer&gt; sortList) &#123;</span><br><span class="line">        if (node != null) &#123;</span><br><span class="line">            ldr(node.left, sortList);</span><br><span class="line">            sortList.add(node.value);</span><br><span class="line">            ldr(node.right, sortList);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 后序遍历，左-&gt;右-&gt;根</span><br><span class="line">     */</span><br><span class="line">    private void lrd(Node&lt;Integer&gt; node, List&lt;Integer&gt; sortList) &#123;</span><br><span class="line">        if (node != null) &#123;</span><br><span class="line">            lrd(node.left, sortList);</span><br><span class="line">            lrd(node.right, sortList);</span><br><span class="line">            sortList.add(node.value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 二叉树节点类</span><br><span class="line">     */</span><br><span class="line">    class Node&lt;E&gt; &#123;</span><br><span class="line"></span><br><span class="line">        // 节点内容</span><br><span class="line">        private E value;</span><br><span class="line"></span><br><span class="line">        // 左节点</span><br><span class="line">        private Node&lt;E&gt; left;</span><br><span class="line"></span><br><span class="line">        // 右节点</span><br><span class="line">        private Node&lt;E&gt; right;</span><br><span class="line"></span><br><span class="line">        public Node() &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public Node(E value) &#123;</span><br><span class="line">            this.value = value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public Node(E value, Node&lt;E&gt; left, Node&lt;E&gt; right) &#123;</span><br><span class="line">            this.value = value;</span><br><span class="line">            this.left = left;</span><br><span class="line">            this.right = right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>BinaryTreeTest</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class BinaryTreeTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        List&lt;Integer&gt; list = Arrays.asList(4,2,1,5,3,6);</span><br><span class="line">        BinaryTreeSort binaryTreeSort = new BinaryTreeSort();</span><br><span class="line">        binaryTreeSort.sort(list);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>algorithms</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>堆栈</title>
-    <url>/posts/af55460a/</url>
-    <content><![CDATA[<h2 id="堆栈数据结构"><a href="#堆栈数据结构" class="headerlink" title="堆栈数据结构"></a>堆栈数据结构</h2><ul>
-<li>先进先出<ul>
-<li>数据压栈，通过与运算得到索引值。当发生空间不足时扩容迁移数据，有两次操作，前半段复制与后半段复制。</li>
-<li>数据弹出时，按照空间元素数量总数开始，同样计算索引值。分为弹出队列中未发生迁移的数据和已经完全迁移好的数据。凡是迁移的数据，都是保证了一个顺序。</li>
-</ul>
-</li>
-<li>以2的次幂进行初始化，扩容为2的倍数（保证计算元素索引位置时，可以进行运算）。</li>
-</ul>
-<p><img src="https://img.itcode.net.cn/blog/202308132158443.png" alt="image-20230813215836738"></p>
-<p><img src="https://img.itcode.net.cn/blog/202308132200543.png" alt="image-20230813220023947"></p>
-<h3 id="源码实现"><a href="#源码实现" class="headerlink" title="源码实现"></a>源码实现</h3><ul>
-<li>添加元素 ArrayDeque#push</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public void push(E e) &#123;</span><br><span class="line">    if (e == null)</span><br><span class="line">        throw new NullPointerException();</span><br><span class="line">    elements[head = (head - 1) &amp; (elements.length - 1)] = e;</span><br><span class="line">    logger.info(&quot;push.idx head：&#123;&#125;&quot;, head);</span><br><span class="line">    if (head == tail)</span><br><span class="line">        doubleCapacity();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//push 元素的过程相当于找到初始化数组长度的队尾，另外是扩容后从新的队尾开始依次添加元素。此时不用担心元素的输出，因为输出时是从扩容起始点开始输出元素。</span><br><span class="line"></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img.itcode.net.cn/blog/202308132201312.png" alt="image-20230813220101862"></p>
-<ul>
-<li>扩容空间 ArrayDeque#doubleCapacity</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private void doubleCapacity() &#123;</span><br><span class="line">    assert head == tail;</span><br><span class="line">    int p = head;</span><br><span class="line">    int n = elements.length;</span><br><span class="line">    int r = n - p;</span><br><span class="line">    int newCapacity = n &lt;&lt; 1;</span><br><span class="line">    if (newCapacity &lt; 0)</span><br><span class="line">        throw new IllegalStateException(&quot;Sorry, deque too big&quot;);</span><br><span class="line">    Object[] a = new Object[newCapacity];</span><br><span class="line">    /*</span><br><span class="line">     * src      - 源数组</span><br><span class="line">     * srcPos   – 源数组中的起始位置</span><br><span class="line">     * dest     - 目标数组</span><br><span class="line">     * destPos  – 目标数据中的起始位置</span><br><span class="line">     * length   – 要复制的数组元素的数量</span><br><span class="line">     */</span><br><span class="line">    // 第一次拷贝元素：[2、1、4、3] 将数组中的扩容后一半元素拷贝到新数组0开始往后的位置。拷贝4、3</span><br><span class="line">    System.arraycopy(elements, p, a, 0, r);</span><br><span class="line">    // 第二次拷贝元素：[2、1、4、3] 将数组中的前面一半数量的元素，拷贝到新数组后一半开始的位置往后。拷贝2、1</span><br><span class="line">    System.arraycopy(elements, 0, a, r, p);</span><br><span class="line">    elements = a;</span><br><span class="line">    head = 0;</span><br><span class="line">    tail = n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>空间扩容以2的倍数进行操作，以此保证2的幂等。</li>
-<li>System.arraycopy 是操作数据迁移的本地方法，从源数组的某个指定位置，把元素迁移到新数组的指定位置和指定个数个元素。</li>
-<li>另外是数据迁移，以 [2、1、4、3] 举例；<ul>
-<li>第一次拷贝元素：[2、1、4、3] 将数组中的扩容后一半元素拷贝到新数组0开始往后的位置。拷贝4、3</li>
-<li>第二次拷贝元素：[2、1、4、3] 将数组中的前面一半数量的元素，拷贝到新数组后一半开始的位置往后。拷贝2、1</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://img.itcode.net.cn/blog/202308132201594.png" alt="image-20230813220132550"></p>
-<ul>
-<li>弹出元素 ArrayDeque#pop</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public E pop() &#123;</span><br><span class="line">    int h = head;</span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    E result = (E) elements[h];</span><br><span class="line">    if (result == null) &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">    elements[h] = null;</span><br><span class="line">    head = (h + 1) &amp; (elements.length - 1);</span><br><span class="line">    logger.info(&quot;pop.idx &#123;&#125; = &#123;&#125; &amp; &#123;&#125;&quot;, head, Integer.toBinaryString(h + 1), Integer.toBinaryString(elements.length - 1));</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>按照索引的计算，以此是弹出索引为：6、7、0、1、2、3、4 对应的元素。head 的值从扩容的长度添加元素后逐步减小，所以当前最开始弹出的元素是6索引对应的值。</li>
-</ul>
-<p><img src="https://img.itcode.net.cn/blog/202308132201450.png" alt="image-20230813220155788"></p>
-<ul>
-<li>测试代码</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void test_stack() &#123;</span><br><span class="line">    Deque&lt;Integer&gt; deque = new ArrayDeque&lt;&gt;();</span><br><span class="line">    deque.push(1);</span><br><span class="line">    deque.push(2);</span><br><span class="line">    deque.push(3);</span><br><span class="line">    deque.push(4);</span><br><span class="line">    deque.push(5);</span><br><span class="line">    deque.push(6);</span><br><span class="line">    deque.push(7);</span><br><span class="line">    </span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>algorithms</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux常用命令</title>
     <url>/posts/d0edc1ed/</url>
     <content><![CDATA[<h2 id="目录与文件"><a href="#目录与文件" class="headerlink" title="目录与文件"></a>目录与文件</h2><ul>
@@ -414,6 +285,256 @@
       </tags>
   </entry>
   <entry>
+    <title>二叉树</title>
+    <url>/posts/e85d694a/</url>
+    <content><![CDATA[<h2 id="二叉树实现原理"><a href="#二叉树实现原理" class="headerlink" title="二叉树实现原理"></a>二叉树实现原理</h2><ul>
+<li>每个节点最多只有2两个子节点</li>
+<li>遍历元素口诀：前序遍历，根-&gt;左-&gt;右、中序遍历，左-&gt;根-&gt;右、后序遍历，左-&gt;右-&gt;根</li>
+<li>排序机制：依次从根节点往下比较，小于当前节点值则走左子节点，大于当前节点值则走右子节点，然后用中序遍历</li>
+</ul>
+<p>下面对一组数字进行排序：4、2、1、5、3、6，排序机制添加元素（箭头为中序排序顺序），结果如下图</p>
+<p><img src="https://img.itcode.net.cn/blog/202308102217969.png" alt="image-20230810221716805"></p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ul>
+<li>Tree</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface Tree&lt;E&gt; &#123;</span><br><span class="line"></span><br><span class="line">    public boolean add(E e);</span><br><span class="line"></span><br><span class="line">    public void sort(List&lt;E&gt; list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>BinaryTreeSort</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class BinaryTreeSort implements Tree&lt;Integer&gt; &#123;</span><br><span class="line">    // 根节点</span><br><span class="line">    private Node&lt;Integer&gt; root;</span><br><span class="line"></span><br><span class="line">    public BinaryTreeSort() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 依次从根节点往下比较，小于当前节点值则走左子节点，大于当前节点值则走右子节点</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public boolean add(Integer i) &#123;</span><br><span class="line">        Node&lt;Integer&gt; node = new Node&lt;&gt;(i);</span><br><span class="line">        // 根节点不存在</span><br><span class="line">        if (root == null) &#123;</span><br><span class="line">            root = node;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        Node&lt;Integer&gt; newNode = new Node&lt;&gt;(i, null, null);</span><br><span class="line">        Node&lt;Integer&gt; parent = parent(null, i);</span><br><span class="line">        if (Integer.compare(i, parent.value) == -1) &#123;</span><br><span class="line">            parent.left = newNode;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            parent.right = newNode;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 利用中序遍历来排序</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void sort(List&lt;Integer&gt; list) &#123;</span><br><span class="line">        list.forEach(v -&gt; &#123;</span><br><span class="line">            add(v);</span><br><span class="line">        &#125;);</span><br><span class="line">        List&lt;Integer&gt; sortList = new ArrayList&lt;&gt;();</span><br><span class="line">        ldr(root, sortList);</span><br><span class="line">        System.out.println(&quot;sortList: &quot;+ sortList.stream().map(v -&gt; String.valueOf(v)).collect(Collectors.joining(&quot;,&quot;)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 递归计算双亲位置</span><br><span class="line">     * 当前节点的子节点不存在时，则当前节点为其双亲</span><br><span class="line">     */</span><br><span class="line">    private Node&lt;Integer&gt; parent(Node&lt;Integer&gt; node, Integer i) &#123;</span><br><span class="line">        Node&lt;Integer&gt; parent = node == null ? root : node;</span><br><span class="line">        if (Integer.compare(i, parent.value) == -1) &#123;</span><br><span class="line">            return parent.left == null ? parent : parent(parent.left, i);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return parent.right == null ? parent : parent(parent.right, i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 前序遍历，根-&gt;左-&gt;右</span><br><span class="line">     */</span><br><span class="line">    private void rld(Node&lt;Integer&gt; node, List&lt;Integer&gt; sortList) &#123;</span><br><span class="line">        if (node != null) &#123;</span><br><span class="line">            sortList.add(node.value);</span><br><span class="line">            rld(node.left, sortList);</span><br><span class="line">            rld(node.right, sortList);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 中序遍历，左-&gt;根-&gt;右</span><br><span class="line">     */</span><br><span class="line">    private void ldr(Node&lt;Integer&gt; node, List&lt;Integer&gt; sortList) &#123;</span><br><span class="line">        if (node != null) &#123;</span><br><span class="line">            ldr(node.left, sortList);</span><br><span class="line">            sortList.add(node.value);</span><br><span class="line">            ldr(node.right, sortList);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 后序遍历，左-&gt;右-&gt;根</span><br><span class="line">     */</span><br><span class="line">    private void lrd(Node&lt;Integer&gt; node, List&lt;Integer&gt; sortList) &#123;</span><br><span class="line">        if (node != null) &#123;</span><br><span class="line">            lrd(node.left, sortList);</span><br><span class="line">            lrd(node.right, sortList);</span><br><span class="line">            sortList.add(node.value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 二叉树节点类</span><br><span class="line">     */</span><br><span class="line">    class Node&lt;E&gt; &#123;</span><br><span class="line"></span><br><span class="line">        // 节点内容</span><br><span class="line">        private E value;</span><br><span class="line"></span><br><span class="line">        // 左节点</span><br><span class="line">        private Node&lt;E&gt; left;</span><br><span class="line"></span><br><span class="line">        // 右节点</span><br><span class="line">        private Node&lt;E&gt; right;</span><br><span class="line"></span><br><span class="line">        public Node() &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public Node(E value) &#123;</span><br><span class="line">            this.value = value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public Node(E value, Node&lt;E&gt; left, Node&lt;E&gt; right) &#123;</span><br><span class="line">            this.value = value;</span><br><span class="line">            this.left = left;</span><br><span class="line">            this.right = right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>BinaryTreeTest</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class BinaryTreeTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        List&lt;Integer&gt; list = Arrays.asList(4,2,1,5,3,6);</span><br><span class="line">        BinaryTreeSort binaryTreeSort = new BinaryTreeSort();</span><br><span class="line">        binaryTreeSort.sort(list);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>algorithms</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>动态数组</title>
+    <url>/posts/3594e15e/</url>
+    <content><![CDATA[<h2 id="动态数组实现原理"><a href="#动态数组实现原理" class="headerlink" title="动态数组实现原理"></a>动态数组实现原理</h2><p>相较于大家都熟悉的普通数组，动态数组主要体现在两个方面，即数组扩容与数组缩减，综合体现如下：</p>
+<ul>
+<li>添加元素</li>
+</ul>
+<p>不局限于只在数组末尾添加，而是能够随意选择索引位置(只要不超过数组长度)</p>
+<ul>
+<li>删除元素</li>
+</ul>
+<p>同添加元素，也可根据索引进行选择</p>
+<ul>
+<li>数组扩容</li>
+</ul>
+<p>数组一旦装满元素，可触发数组扩容，即新建一个更长的数组，将原数组元素转移到新数组中，并将引用指向新数组，完成数组的变更；</p>
+<ul>
+<li>数组缩容</li>
+</ul>
+<p>如果数组元素相对总容量来说过少(例如数组元素个数小于数组容量的1&#x2F;4)，便可触发数组缩减，即新建一个更短的数组，并转移元素至新数组。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ul>
+<li>Array</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class Array&lt;E&gt; &#123;</span><br><span class="line">    private E[] data;       // 使用静态数组存放数组元素</span><br><span class="line">    private int size;       // 记录数组元素数量</span><br><span class="line"></span><br><span class="line">    public Array(int capacity) &#123;</span><br><span class="line">        this.data = (E[]) new Object[capacity];</span><br><span class="line">        this.size = 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getSize() &#123;</span><br><span class="line">        return size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Array() &#123;</span><br><span class="line">        this(10);   // 默认capacity为10</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组扩容/缩减</span><br><span class="line">    public void resize(int newCapacity) &#123;</span><br><span class="line">        // 新数组长度必须大于0</span><br><span class="line">        if (newCapacity &lt; 0) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;capacity must &gt; 0!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 创建新数组</span><br><span class="line">        E[] newData = (E[]) new Object[newCapacity];</span><br><span class="line">        // 将原数组元素放入新数组中</span><br><span class="line">        for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">            newData[i] = data[i];</span><br><span class="line">        &#125;</span><br><span class="line">        // 将引用指向新数组</span><br><span class="line">        data = newData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 在指定位置添加元素</span><br><span class="line">     * 指定位置处的元素需要向右侧移动一个单位</span><br><span class="line">     * @param index   索引</span><br><span class="line">     * @param element 要添加的元素</span><br><span class="line">     */</span><br><span class="line">    public void add(int index, E element) &#123;</span><br><span class="line">        if (index &lt; 0 || index &gt; size) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal index, index must &gt; 0 and &lt;= size!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 数组满员触发扩容</span><br><span class="line">        if (size == data.length) &#123;</span><br><span class="line">            resize(2 * data.length);  // 扩容为原数组的2倍</span><br><span class="line">        &#125;</span><br><span class="line">        // 从尾部开始，向右移动元素，直到index</span><br><span class="line">        for (int i = size - 1; i &gt;= index; i--) &#123;</span><br><span class="line">            data[i + 1] = data[i];</span><br><span class="line">        &#125;</span><br><span class="line">        // 添加元素</span><br><span class="line">        data[index] = element;</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组头部添加元素</span><br><span class="line">    public void addFirst(E element) &#123;</span><br><span class="line">        add(0, element);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 数组尾部添加元素</span><br><span class="line">    public void addLast(E element) &#123;</span><br><span class="line">        add(size, element);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 删除指定位置元素</span><br><span class="line">     * 通过向左移动一位，覆盖指定位置处的元素，实现删除元素(data[size - 1] = null)</span><br><span class="line">     * @param index 索引</span><br><span class="line">     */</span><br><span class="line">    public E remove(int index) &#123;</span><br><span class="line">        if (index &lt; 0 || index &gt; size) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Illegal index, index must &gt; 0 and &lt; size!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        // 数组长度为0时抛出异常</span><br><span class="line">        if (size == 0) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;Empty array!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        E removedElement = data[index];</span><br><span class="line">        // 向左移动元素</span><br><span class="line">        for (int i = index; i &lt; size - 1; i++) &#123;</span><br><span class="line">            data[i] = data[i + 1];</span><br><span class="line">        &#125;</span><br><span class="line">        // 将尾部空闲出的位置置为空，释放资源</span><br><span class="line">        data[size - 1] = null;</span><br><span class="line">        size--;</span><br><span class="line">        // size过小触发数组缩减</span><br><span class="line">        if (size == data.length / 4 &amp;&amp; data.length / 2 != 0) &#123;</span><br><span class="line">            resize(data.length / 2);</span><br><span class="line">        &#125;</span><br><span class="line">        return removedElement;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 删除头部元素</span><br><span class="line">    public E removeFirst() &#123;</span><br><span class="line">        return remove(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 删除尾部元素</span><br><span class="line">    public E removeLast() &#123;</span><br><span class="line">        return remove(size - 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 重写Override方法，自定义数组显示格式</span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        StringBuilder str = new StringBuilder();</span><br><span class="line">        // 显示数组的整体情况(长度、总容量)</span><br><span class="line">        str.append(String.format(&quot;Array: size = %d, capacity = %d\n[&quot;, size, data.length));</span><br><span class="line">        // 循环添加数组元素至str</span><br><span class="line">        for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">            str.append(data[i]);</span><br><span class="line">            if (i &lt; size - 1) &#123;</span><br><span class="line">                str.append(&quot;, &quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        str.append(&quot;]&quot;);</span><br><span class="line">        return str.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ArrayTest</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class ArrayTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        // 添加10个元素</span><br><span class="line">        Array&lt;Integer&gt; arr = new Array&lt;&gt;();</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">            arr.add(i, i);</span><br><span class="line">        &#125;</span><br><span class="line">        // 查看数组当前状态</span><br><span class="line">        System.out.println(arr);</span><br><span class="line">        // 继续添加元素，观察是否扩容</span><br><span class="line">        arr.add(arr.getSize(), 7);</span><br><span class="line">        System.out.println(arr);</span><br><span class="line"></span><br><span class="line">        // 再删除6个元素，观察是否缩减</span><br><span class="line">        for (int i = 0; i &lt; 6; i++) &#123;</span><br><span class="line">            System.out.println(&quot;元素&quot; + arr.removeFirst() + &quot;已被删除！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(arr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>algorithms</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>堆栈</title>
+    <url>/posts/af55460a/</url>
+    <content><![CDATA[<h2 id="堆栈数据结构"><a href="#堆栈数据结构" class="headerlink" title="堆栈数据结构"></a>堆栈数据结构</h2><ul>
+<li>先进先出<ul>
+<li>数据压栈，通过与运算得到索引值。当发生空间不足时扩容迁移数据，有两次操作，前半段复制与后半段复制。</li>
+<li>数据弹出时，按照空间元素数量总数开始，同样计算索引值。分为弹出队列中未发生迁移的数据和已经完全迁移好的数据。凡是迁移的数据，都是保证了一个顺序。</li>
+</ul>
+</li>
+<li>以2的次幂进行初始化，扩容为2的倍数（保证计算元素索引位置时，可以进行运算）。</li>
+</ul>
+<p><img src="https://img.itcode.net.cn/blog/202308132158443.png" alt="image-20230813215836738"></p>
+<p><img src="https://img.itcode.net.cn/blog/202308132200543.png" alt="image-20230813220023947"></p>
+<h3 id="源码实现"><a href="#源码实现" class="headerlink" title="源码实现"></a>源码实现</h3><ul>
+<li>添加元素 ArrayDeque#push</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public void push(E e) &#123;</span><br><span class="line">    if (e == null)</span><br><span class="line">        throw new NullPointerException();</span><br><span class="line">    elements[head = (head - 1) &amp; (elements.length - 1)] = e;</span><br><span class="line">    logger.info(&quot;push.idx head：&#123;&#125;&quot;, head);</span><br><span class="line">    if (head == tail)</span><br><span class="line">        doubleCapacity();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//push 元素的过程相当于找到初始化数组长度的队尾，另外是扩容后从新的队尾开始依次添加元素。此时不用担心元素的输出，因为输出时是从扩容起始点开始输出元素。</span><br><span class="line"></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img.itcode.net.cn/blog/202308132201312.png" alt="image-20230813220101862"></p>
+<ul>
+<li>扩容空间 ArrayDeque#doubleCapacity</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private void doubleCapacity() &#123;</span><br><span class="line">    assert head == tail;</span><br><span class="line">    int p = head;</span><br><span class="line">    int n = elements.length;</span><br><span class="line">    int r = n - p;</span><br><span class="line">    int newCapacity = n &lt;&lt; 1;</span><br><span class="line">    if (newCapacity &lt; 0)</span><br><span class="line">        throw new IllegalStateException(&quot;Sorry, deque too big&quot;);</span><br><span class="line">    Object[] a = new Object[newCapacity];</span><br><span class="line">    /*</span><br><span class="line">     * src      - 源数组</span><br><span class="line">     * srcPos   – 源数组中的起始位置</span><br><span class="line">     * dest     - 目标数组</span><br><span class="line">     * destPos  – 目标数据中的起始位置</span><br><span class="line">     * length   – 要复制的数组元素的数量</span><br><span class="line">     */</span><br><span class="line">    // 第一次拷贝元素：[2、1、4、3] 将数组中的扩容后一半元素拷贝到新数组0开始往后的位置。拷贝4、3</span><br><span class="line">    System.arraycopy(elements, p, a, 0, r);</span><br><span class="line">    // 第二次拷贝元素：[2、1、4、3] 将数组中的前面一半数量的元素，拷贝到新数组后一半开始的位置往后。拷贝2、1</span><br><span class="line">    System.arraycopy(elements, 0, a, r, p);</span><br><span class="line">    elements = a;</span><br><span class="line">    head = 0;</span><br><span class="line">    tail = n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>空间扩容以2的倍数进行操作，以此保证2的幂等。</li>
+<li>System.arraycopy 是操作数据迁移的本地方法，从源数组的某个指定位置，把元素迁移到新数组的指定位置和指定个数个元素。</li>
+<li>另外是数据迁移，以 [2、1、4、3] 举例；<ul>
+<li>第一次拷贝元素：[2、1、4、3] 将数组中的扩容后一半元素拷贝到新数组0开始往后的位置。拷贝4、3</li>
+<li>第二次拷贝元素：[2、1、4、3] 将数组中的前面一半数量的元素，拷贝到新数组后一半开始的位置往后。拷贝2、1</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://img.itcode.net.cn/blog/202308132201594.png" alt="image-20230813220132550"></p>
+<ul>
+<li>弹出元素 ArrayDeque#pop</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public E pop() &#123;</span><br><span class="line">    int h = head;</span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    E result = (E) elements[h];</span><br><span class="line">    if (result == null) &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">    elements[h] = null;</span><br><span class="line">    head = (h + 1) &amp; (elements.length - 1);</span><br><span class="line">    logger.info(&quot;pop.idx &#123;&#125; = &#123;&#125; &amp; &#123;&#125;&quot;, head, Integer.toBinaryString(h + 1), Integer.toBinaryString(elements.length - 1));</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>按照索引的计算，以此是弹出索引为：6、7、0、1、2、3、4 对应的元素。head 的值从扩容的长度添加元素后逐步减小，所以当前最开始弹出的元素是6索引对应的值。</li>
+</ul>
+<p><img src="https://img.itcode.net.cn/blog/202308132201450.png" alt="image-20230813220155788"></p>
+<ul>
+<li>测试代码</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void test_stack() &#123;</span><br><span class="line">    Deque&lt;Integer&gt; deque = new ArrayDeque&lt;&gt;();</span><br><span class="line">    deque.push(1);</span><br><span class="line">    deque.push(2);</span><br><span class="line">    deque.push(3);</span><br><span class="line">    deque.push(4);</span><br><span class="line">    deque.push(5);</span><br><span class="line">    deque.push(6);</span><br><span class="line">    deque.push(7);</span><br><span class="line">    </span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">    logger.info(&quot;弹出元素：&#123;&#125;&quot;, deque.pop());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>algorithms</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>字典树Tire</title>
+    <url>/posts/e41f7f44/</url>
+    <content><![CDATA[<h2 id="字典树数据结构"><a href="#字典树数据结构" class="headerlink" title="字典树数据结构"></a>字典树数据结构</h2><p>是一种搜索树，一种已排序的数据结构，通常用于存储动态集或键为字符串的关联数组。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。</p>
+<p><img src="https://img.itcode.net.cn/blog/202308142249820.png" alt="image-20230814224935665"></p>
+<ul>
+<li>这是一个把 battle 单词字符串，按照字母拆分到字典树进行存放的图。</li>
+<li>键标注在节点中，值标注在节点之下。每一个完整的英文单词对应一个特定的整数。也就是26个字母对应的 ASCII 转换后的值。</li>
+</ul>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>字典树字母的存放有26个，也就是说在实现的过程中，每一个节点的分支都有26个槽位用来存放可能出现的字母组合。同理如果是数字树的话就是10个数字的组合，每个字典树上的节点对应的分支则有10个操作存放可能出现组合的数字。</p>
+<h3 id="树枝节点"><a href="#树枝节点" class="headerlink" title="树枝节点"></a>树枝节点</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class TrieNode &#123;</span><br><span class="line"></span><br><span class="line">    /** 形成一个链 */</span><br><span class="line">    public TrieNode[] slot = new TrieNode[26];</span><br><span class="line"></span><br><span class="line">    /** 字母 */</span><br><span class="line">    public char c;</span><br><span class="line"></span><br><span class="line">    /** 单词：数量 &gt; 0 表示一个单词 */</span><br><span class="line">    public boolean isWord;</span><br><span class="line"></span><br><span class="line">    /** 前缀 */</span><br><span class="line">    public int prefix;</span><br><span class="line"></span><br><span class="line">    /** 单词：具体的一个单词字符串 */</span><br><span class="line">    public String word;</span><br><span class="line"></span><br><span class="line">    /** 解释：单词的注释说明 */</span><br><span class="line">    public String explain;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>字典的树的节点需要包括此节点内嵌的关联节点，之后是节点的字母、到此字母是否为单词、单词的前缀、单词字符串和当前单词的非必要注释。</li>
+</ul>
+<h3 id="插入元素"><a href="#插入元素" class="headerlink" title="插入元素"></a>插入元素</h3><p><img src="https://img.itcode.net.cn/blog/202308142251802.png" alt="image-20230814225147254"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public void insert(String words, String explain) &#123;</span><br><span class="line">    TrieNode root = wordsTree;</span><br><span class="line">    char[] chars = words.toCharArray();</span><br><span class="line">    for (char c : chars) &#123;</span><br><span class="line">        int idx = c - &#x27;a&#x27;; // - a 从 0 开始，参考 ASCII 码表</span><br><span class="line">        if (root.slot[idx] == null) &#123;</span><br><span class="line">            root.slot[idx] = new TrieNode();</span><br><span class="line">        &#125;</span><br><span class="line">        root = root.slot[idx];</span><br><span class="line">        root.c = c;</span><br><span class="line">        root.prefix++;</span><br><span class="line">    &#125;</span><br><span class="line">    root.explain = explain; // 单词的注释说明信息</span><br><span class="line">    root.isWord = true;     // 循环拆解单词后标记</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>insert 方法接收单词和注释信息，并对一个单词按照 char 进行拆分，拆分后则计算出索引位置并以此存放。存放完成后标记单词和附属上单词的注释信息。</li>
+</ul>
+<h3 id="索引元素"><a href="#索引元素" class="headerlink" title="索引元素"></a>索引元素</h3><p><img src="https://img.itcode.net.cn/blog/202308142252694.png" alt="image-20230814225235634"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public List&lt;String&gt; searchPrefix(String prefix) &#123;</span><br><span class="line">    TrieNode root = wordsTree;</span><br><span class="line">    char[] chars = prefix.toCharArray();</span><br><span class="line">    StringBuilder cache = new StringBuilder();</span><br><span class="line">    // 精准匹配：根据前置精准查找</span><br><span class="line">    for (char c : chars) &#123;</span><br><span class="line">        int idx = c - &#x27;a&#x27;;</span><br><span class="line">        // 匹配为空</span><br><span class="line">        if (idx &gt; root.slot.length || idx &lt; 0 || root.slot[idx] == null) &#123;</span><br><span class="line">            return Collections.emptyList();</span><br><span class="line">        &#125;</span><br><span class="line">        cache.append(c);</span><br><span class="line">        root = root.slot[idx];</span><br><span class="line">    &#125;</span><br><span class="line">    // 模糊匹配：根据前缀的最后一个单词，递归遍历所有的单词</span><br><span class="line">    ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">    if (root.prefix != 0) &#123;</span><br><span class="line">        for (int i = 0; i &lt; root.slot.length; i++) &#123;</span><br><span class="line">            if (root.slot[i] != null) &#123;</span><br><span class="line">                char c = (char) (i + &#x27;a&#x27;);</span><br><span class="line">                collect(root.slot[i], String.valueOf(cache) + c, list, 15);</span><br><span class="line">                if (list.size() &gt;= 15) &#123;</span><br><span class="line">                    return list;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return list;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected void collect(TrieNode trieNode, String pre, List&lt;String&gt; queue, int resultLimit) &#123;</span><br><span class="line">    // 找到单词</span><br><span class="line">    if (trieNode.isWord) &#123;</span><br><span class="line">        trieNode.word = pre;</span><br><span class="line">        // 保存检索到的单词到 queue</span><br><span class="line">        queue.add(trieNode.word + &quot; -&gt; &quot; + trieNode.explain);</span><br><span class="line">        if (queue.size() &gt;= resultLimit) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    // 递归调用，查找单词</span><br><span class="line">    for (int i = 0; i &lt; trieNode.slot.length; i++) &#123;</span><br><span class="line">        char c = (char) (&#x27;a&#x27; + i);</span><br><span class="line">        if (trieNode.slot[i] != null) &#123;</span><br><span class="line">            collect(trieNode.slot[i], pre + c, queue, resultLimit);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>从字典树从检索元素的过程分为2部分，第1部分是根据提供的索引前缀精准匹配到单词信息，第2部分是根据索引前缀的最后一个单词开始，循环递归遍历从当前位置所能关联到的字母直至判断为是单词标记为结束，通过这样的方式把所有匹配动的单词索引出来。</li>
+<li>list.size() &gt;&#x3D; 15 是判定索引的最大长度，超过这个数量就停止索引了，毕竟这是一种O(n)时间复杂度的操作，如果加载数十万单词进行匹配，执行速度还是比较耗时的。</li>
+</ul>
+<h3 id="字典树功能测试"><a href="#字典树功能测试" class="headerlink" title="字典树功能测试"></a>字典树功能测试</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void test_trie() &#123;</span><br><span class="line">    Trie trie = new Trie();</span><br><span class="line">    // 存入</span><br><span class="line">    trie.insert(&quot;bat&quot;,&quot;大厂&quot;);</span><br><span class="line">    trie.insert(&quot;batch&quot;, &quot;批量&quot;);</span><br><span class="line">    trie.insert(&quot;bitch&quot;, &quot;彪子&quot;);</span><br><span class="line">    trie.insert(&quot;battle&quot;, &quot;战斗&quot;);</span><br><span class="line">    logger.info(trie.toString());</span><br><span class="line">    // 检索</span><br><span class="line">    List&lt;String&gt; trieNodes = trie.searchPrefix(&quot;ba&quot;);</span><br><span class="line">    logger.info(&quot;测试结果：&#123;&#125;&quot;, JSON.toJSONString(trieNodes));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这里提供一些有相近字母的单词和名词，用于测试。你也可以尝试读取txt文件，检索存入数十万单词进行检索验证。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 测试结果</span><br><span class="line">[main] INFO trie.__test__.TrieTest - 测试结果：[&quot;bat -&gt; 大厂&quot;,&quot;batch -&gt; 批量&quot;,&quot;battle -&gt; 战斗&quot;]</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过测试结果可以看到，把所有以 <strong>ba</strong> 开头的单词全部检索出来了。这也是字典树最核心功能的体现。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>algorithms</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>延迟队列</title>
+    <url>/posts/c41f8085/</url>
+    <content><![CDATA[<h2 id="延迟队列说明及实现原理"><a href="#延迟队列说明及实现原理" class="headerlink" title="延迟队列说明及实现原理"></a>延迟队列说明及实现原理</h2><ul>
+<li>是一个无阻塞队列（BlockingQueue）</li>
+<li>使用完全二叉堆结构</li>
+<li>添加元素时，延迟最小的元素放在队首</li>
+</ul>
+<p><img src="https://img.itcode.net.cn/blog/202308112155452.png" alt="image-20230811215548434"></p>
+<h3 id="二叉堆结构"><a href="#二叉堆结构" class="headerlink" title="二叉堆结构"></a>二叉堆结构</h3><p>是一种完整或近似二叉树的结构，下文以PriorityQueue实现平衡二叉堆结构，数据以队列形式存储。其父子节点关系如下：</p>
+<ul>
+<li>父子节点索引关系<ul>
+<li>父节点为queue[n]，左子节点则为queue[2n+1]，右子节点为queue[2n+2]</li>
+<li>任意子节点的父节点位置都是(n-1)&gt;&gt;&gt;1，相当于减1后除2取整</li>
+</ul>
+</li>
+<li>节点间大小关系<ul>
+<li>父节点小于等于任意子节点</li>
+<li>同一层的两个子节点大小不需要维护，仅需在弹出元素时候进行判断</li>
+</ul>
+</li>
+<li>子叶节点与非子叶节点<ul>
+<li>一个长度为size的优先队列，当index &gt;&#x3D; size &gt;&gt;&gt; 1时，该节点为叶子节点，否则为非叶子节点</li>
+</ul>
+</li>
+</ul>
+<h4 id="入队"><a href="#入队" class="headerlink" title="入队"></a>入队</h4><p><img src="https://img.itcode.net.cn/blog/202308112215882.png" alt="image-20230811221525281"></p>
+<h4 id="出队"><a href="#出队" class="headerlink" title="出队"></a>出队</h4><p><img src="https://img.itcode.net.cn/blog/202308112216557.png" alt="image-20230811221615428"></p>
+<h2 id="延迟队列的实现"><a href="#延迟队列的实现" class="headerlink" title="延迟队列的实现"></a>延迟队列的实现</h2><ul>
+<li>Queue 单端队列接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface Queue&lt;E&gt; &#123;</span><br><span class="line">    boolean add(E e);</span><br><span class="line"></span><br><span class="line">    boolean offer(E e);</span><br><span class="line"></span><br><span class="line">    E poll();</span><br><span class="line"></span><br><span class="line">    E peek();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Deque 双端队列</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface Deque&lt;E&gt; extends Queue&lt;E&gt; &#123;</span><br><span class="line">    void addFirst(E e);</span><br><span class="line"></span><br><span class="line">    void addLast(E e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>BlockingQueue 阻塞队列接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface BlockingQueue&lt;E&gt; extends Queue&lt;E&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Delayed 延迟队列接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface Delayed extends Comparable&lt;Delayed&gt;&#123;</span><br><span class="line">    long getDelay(TimeUnit unit);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>PriorityQueue 优先队列</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class PriorityQueue&lt;E&gt; implements Queue&lt;E&gt; &#123;</span><br><span class="line">    private Logger logger = LoggerFactory.getLogger(PriorityQueue.class);</span><br><span class="line"></span><br><span class="line">    private static final int DEFAULT_INITIAL_CAPACITY = 11;</span><br><span class="line"></span><br><span class="line">    transient Object[] queue;</span><br><span class="line"></span><br><span class="line">    private int size = 0;</span><br><span class="line"></span><br><span class="line">    public PriorityQueue() &#123;</span><br><span class="line">        queue = new Object[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean offer(E e) &#123;</span><br><span class="line">        if (e == null) &#123;</span><br><span class="line">            throw new NullPointerException();</span><br><span class="line">        &#125;</span><br><span class="line">        int i = size;</span><br><span class="line">        if (i &gt;= queue.length) &#123;</span><br><span class="line">            grow(i + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        size = i + 1;</span><br><span class="line">        if (i == 0) &#123;</span><br><span class="line">            queue[0] = e;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            siftUp(i, e);</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void grow(int minCapacity) &#123;</span><br><span class="line">        int oldCapacity = queue.length;</span><br><span class="line">        // Double size if small; else grow by 50%</span><br><span class="line">        int newCapacity = oldCapacity + ((oldCapacity &lt; 64) ?</span><br><span class="line">                (oldCapacity + 2) :</span><br><span class="line">                (oldCapacity &gt;&gt; 1));</span><br><span class="line">        // overflow-conscious code</span><br><span class="line">        if (newCapacity - (Integer.MAX_VALUE - 8) &gt; 0) &#123;</span><br><span class="line">            newCapacity = (minCapacity &gt; Integer.MAX_VALUE - 8) ?</span><br><span class="line">                    Integer.MAX_VALUE :</span><br><span class="line">                    Integer.MAX_VALUE - 8;</span><br><span class="line">        &#125;</span><br><span class="line">        queue = Arrays.copyOf(queue, newCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void siftUp(int k, E x) &#123;</span><br><span class="line">        siftUpComparable(k, x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    private void siftUpComparable(int k, E x) &#123;</span><br><span class="line">        Comparable&lt;? super E&gt; key = (Comparable&lt;? super E&gt;) x;</span><br><span class="line">        logger.info(&quot;【入队】元素：&#123;&#125; 当前队列：&#123;&#125;&quot;, JSON.toJSONString(key), JSON.toJSONString(queue));</span><br><span class="line">        while (k &gt; 0) &#123;</span><br><span class="line">            // 获取父节点Idx，相当于除以2</span><br><span class="line">            int parent = (k - 1) &gt;&gt;&gt; 1;</span><br><span class="line">            logger.info(&quot;【入队】寻找当前节点的父节点位置。k：&#123;&#125; parent：&#123;&#125;&quot;, k, parent);</span><br><span class="line">            Object e = queue[parent];</span><br><span class="line">            // 如果当前位置元素，大于父节点元素，则退出循环</span><br><span class="line">            if (key.compareTo((E) e) &gt;= 0) &#123;</span><br><span class="line">                logger.info(&quot;【入队】值比对，父节点：&#123;&#125; 目标节点：&#123;&#125;&quot;, JSON.toJSONString(e), JSON.toJSONString(key));</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            // 相反父节点位置大于当前位置元素，则进行替换</span><br><span class="line">            logger.info(&quot;【入队】替换过程，父子节点位置替换，继续循环。父节点值：&#123;&#125; 存放到位置：&#123;&#125;&quot;, JSON.toJSONString(e), k);</span><br><span class="line">            queue[k] = e;</span><br><span class="line">            k = parent;</span><br><span class="line">        &#125;</span><br><span class="line">        queue[k] = key;</span><br><span class="line">        logger.info(&quot;【入队】完成 Idx：&#123;&#125; Val：&#123;&#125; \r\n当前队列：&#123;&#125; \r\n&quot;, k, JSON.toJSONString(key), JSON.toJSONString(queue));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean add(E e) &#123;</span><br><span class="line">        return offer(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    @Override</span><br><span class="line">    public E poll() &#123;</span><br><span class="line">        if (size == 0) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        int s = --size;</span><br><span class="line">        E result = (E) queue[0];</span><br><span class="line">        E x = (E) queue[s];</span><br><span class="line">        queue[s] = null;</span><br><span class="line">        if (s != 0) &#123;</span><br><span class="line">            siftDown(0, x);</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void siftDown(int k, E x) &#123;</span><br><span class="line">        siftDownComparable(k, x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    private void siftDownComparable(int k, E x) &#123;</span><br><span class="line">        Comparable&lt;? super E&gt; key = (Comparable&lt;? super E&gt;) x;</span><br><span class="line">        // 先找出中间件节点</span><br><span class="line">        int half = size &gt;&gt;&gt; 1;</span><br><span class="line">        while (k &lt; half) &#123;</span><br><span class="line">            // 找到左子节点和右子节点，两个节点进行比较，找出最大的值</span><br><span class="line">            int child = (k &lt;&lt; 1) + 1;</span><br><span class="line">            Object c = queue[child];</span><br><span class="line">            int right = child + 1;</span><br><span class="line">            // 左子节点与右子节点比较，取最小的节点</span><br><span class="line">            if (right &lt; size &amp;&amp; ((Comparable&lt;? super E&gt;) c).compareTo((E) queue[right]) &gt; 0) &#123;</span><br><span class="line">                logger.info(&quot;【出队】左右子节点比对，获取最小值。left：&#123;&#125; right：&#123;&#125;&quot;, JSON.toJSONString(c), JSON.toJSONString(queue[right]));</span><br><span class="line">                c = queue[child = right];</span><br><span class="line">            &#125;</span><br><span class="line">            // 目标值与c比较，当目标值小于c值，退出循环。说明此时目标值所在位置适合，迁移完成。</span><br><span class="line">            if (key.compareTo((E) c) &lt;= 0) &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            // 目标值小于c值，位置替换，继续比较</span><br><span class="line">            logger.info(&quot;【出队】替换过程，节点的值比对。上节点：&#123;&#125; 下节点：&#123;&#125; 位置替换&quot;, JSON.toJSONString(queue[k]), JSON.toJSONString(c));</span><br><span class="line">            queue[k] = c;</span><br><span class="line">            k = child;</span><br><span class="line">        &#125;</span><br><span class="line">        // 把目标值放到对应位置</span><br><span class="line">        logger.info(&quot;【出队】替换结果，最终更换位置。Idx：&#123;&#125; Val：&#123;&#125;&quot;, k, JSON.toJSONString(key));</span><br><span class="line">        queue[k] = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    @Override</span><br><span class="line">    public E peek() &#123;</span><br><span class="line">        return (size == 0) ? null : (E) queue[0];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>DelayQueue 延迟队列</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class DelayQueue&lt;E  extends Delayed&gt; implements BlockingQueue&lt;E&gt;&#123;</span><br><span class="line">    private final transient ReentrantLock lock = new ReentrantLock();</span><br><span class="line">    private final PriorityQueue&lt;E&gt; q = new PriorityQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    private final Condition available = lock.newCondition();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean add(E e) &#123;</span><br><span class="line">        return offer(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean offer(E e) &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            q.offer(e);</span><br><span class="line">            if (q.peek() == e) &#123;</span><br><span class="line">                available.signal();</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public E poll() &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            E first = q.peek();</span><br><span class="line">            if (first == null || first.getDelay(NANOSECONDS) &gt; 0) &#123;</span><br><span class="line">                return null;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                return q.poll();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public E peek() &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            return q.peek();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试代码 QueueTest</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class QueueTest &#123;</span><br><span class="line">    private final Logger logger = LoggerFactory.getLogger(QueueTest.class);</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void test_queue() throws InterruptedException &#123;</span><br><span class="line">        Queue&lt;Job&gt; queue = new DelayQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        queue.add(new Job(&quot;1号&quot;, 1000L));</span><br><span class="line">        queue.add(new Job(&quot;3号&quot;, 3000L));</span><br><span class="line">        queue.add(new Job(&quot;5号&quot;, 5000L));</span><br><span class="line">        queue.add(new Job(&quot;11号&quot;, 11000L));</span><br><span class="line">        queue.add(new Job(&quot;4号&quot;, 4000L));</span><br><span class="line">        queue.add(new Job(&quot;6号&quot;, 6000L));</span><br><span class="line">        queue.add(new Job(&quot;7号&quot;, 7000L));</span><br><span class="line">        queue.add(new Job(&quot;12号&quot;, 12000L));</span><br><span class="line">        queue.add(new Job(&quot;15号&quot;, 15000L));</span><br><span class="line">        queue.add(new Job(&quot;10号&quot;, 10000L));</span><br><span class="line">        queue.add(new Job(&quot;9号&quot;, 9000L));</span><br><span class="line">        queue.add(new Job(&quot;8号&quot;, 8000L));</span><br><span class="line"></span><br><span class="line">        while (true) &#123;</span><br><span class="line">            Job poll = queue.poll();</span><br><span class="line">            if (null == poll) &#123;</span><br><span class="line">                Thread.sleep(10);</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            logger.info(poll.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static class Job implements Delayed &#123;</span><br><span class="line"></span><br><span class="line">        private final String name;</span><br><span class="line">        private final Long begin;</span><br><span class="line">        private final Long delayTime;</span><br><span class="line"></span><br><span class="line">        public Job(String name, Long delayTime) &#123;</span><br><span class="line">            this.name = name;</span><br><span class="line">            this.begin = System.currentTimeMillis();</span><br><span class="line">            this.delayTime = delayTime;//延时时长</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public long getDelay(TimeUnit unit) &#123;</span><br><span class="line">            return unit.convert(begin + delayTime - System.currentTimeMillis(), TimeUnit.MICROSECONDS);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public String getName() &#123;</span><br><span class="line">            return name;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public int compareTo(Delayed o) &#123;</span><br><span class="line">            Job job = (Job) o;</span><br><span class="line">            return (int) (this.getDelay(TimeUnit.MICROSECONDS) - job.getDelay(TimeUnit.MICROSECONDS));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>algorithms</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>循环队列</title>
     <url>/posts/b66774c1/</url>
     <content><![CDATA[<h2 id="循环队列实现原理"><a href="#循环队列实现原理" class="headerlink" title="循环队列实现原理"></a>循环队列实现原理</h2><ul>
@@ -527,81 +648,6 @@
       </categories>
       <tags>
         <tag>Mybatis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>延迟队列</title>
-    <url>/posts/c41f8085/</url>
-    <content><![CDATA[<h2 id="延迟队列说明及实现原理"><a href="#延迟队列说明及实现原理" class="headerlink" title="延迟队列说明及实现原理"></a>延迟队列说明及实现原理</h2><ul>
-<li>是一个无阻塞队列（BlockingQueue）</li>
-<li>使用完全二叉堆结构</li>
-<li>添加元素时，延迟最小的元素放在队首</li>
-</ul>
-<p><img src="https://img.itcode.net.cn/blog/202308112155452.png" alt="image-20230811215548434"></p>
-<h3 id="二叉堆结构"><a href="#二叉堆结构" class="headerlink" title="二叉堆结构"></a>二叉堆结构</h3><p>是一种完整或近似二叉树的结构，下文以PriorityQueue实现平衡二叉堆结构，数据以队列形式存储。其父子节点关系如下：</p>
-<ul>
-<li>父子节点索引关系<ul>
-<li>父节点为queue[n]，左子节点则为queue[2n+1]，右子节点为queue[2n+2]</li>
-<li>任意子节点的父节点位置都是(n-1)&gt;&gt;&gt;1，相当于减1后除2取整</li>
-</ul>
-</li>
-<li>节点间大小关系<ul>
-<li>父节点小于等于任意子节点</li>
-<li>同一层的两个子节点大小不需要维护，仅需在弹出元素时候进行判断</li>
-</ul>
-</li>
-<li>子叶节点与非子叶节点<ul>
-<li>一个长度为size的优先队列，当index &gt;&#x3D; size &gt;&gt;&gt; 1时，该节点为叶子节点，否则为非叶子节点</li>
-</ul>
-</li>
-</ul>
-<h4 id="入队"><a href="#入队" class="headerlink" title="入队"></a>入队</h4><p><img src="https://img.itcode.net.cn/blog/202308112215882.png" alt="image-20230811221525281"></p>
-<h4 id="出队"><a href="#出队" class="headerlink" title="出队"></a>出队</h4><p><img src="https://img.itcode.net.cn/blog/202308112216557.png" alt="image-20230811221615428"></p>
-<h2 id="延迟队列的实现"><a href="#延迟队列的实现" class="headerlink" title="延迟队列的实现"></a>延迟队列的实现</h2><ul>
-<li>Queue 单端队列接口</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface Queue&lt;E&gt; &#123;</span><br><span class="line">    boolean add(E e);</span><br><span class="line"></span><br><span class="line">    boolean offer(E e);</span><br><span class="line"></span><br><span class="line">    E poll();</span><br><span class="line"></span><br><span class="line">    E peek();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>Deque 双端队列</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface Deque&lt;E&gt; extends Queue&lt;E&gt; &#123;</span><br><span class="line">    void addFirst(E e);</span><br><span class="line"></span><br><span class="line">    void addLast(E e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>BlockingQueue 阻塞队列接口</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface BlockingQueue&lt;E&gt; extends Queue&lt;E&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>Delayed 延迟队列接口</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public interface Delayed extends Comparable&lt;Delayed&gt;&#123;</span><br><span class="line">    long getDelay(TimeUnit unit);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>PriorityQueue 优先队列</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class PriorityQueue&lt;E&gt; implements Queue&lt;E&gt; &#123;</span><br><span class="line">    private Logger logger = LoggerFactory.getLogger(PriorityQueue.class);</span><br><span class="line"></span><br><span class="line">    private static final int DEFAULT_INITIAL_CAPACITY = 11;</span><br><span class="line"></span><br><span class="line">    transient Object[] queue;</span><br><span class="line"></span><br><span class="line">    private int size = 0;</span><br><span class="line"></span><br><span class="line">    public PriorityQueue() &#123;</span><br><span class="line">        queue = new Object[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean offer(E e) &#123;</span><br><span class="line">        if (e == null) &#123;</span><br><span class="line">            throw new NullPointerException();</span><br><span class="line">        &#125;</span><br><span class="line">        int i = size;</span><br><span class="line">        if (i &gt;= queue.length) &#123;</span><br><span class="line">            grow(i + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        size = i + 1;</span><br><span class="line">        if (i == 0) &#123;</span><br><span class="line">            queue[0] = e;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            siftUp(i, e);</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void grow(int minCapacity) &#123;</span><br><span class="line">        int oldCapacity = queue.length;</span><br><span class="line">        // Double size if small; else grow by 50%</span><br><span class="line">        int newCapacity = oldCapacity + ((oldCapacity &lt; 64) ?</span><br><span class="line">                (oldCapacity + 2) :</span><br><span class="line">                (oldCapacity &gt;&gt; 1));</span><br><span class="line">        // overflow-conscious code</span><br><span class="line">        if (newCapacity - (Integer.MAX_VALUE - 8) &gt; 0) &#123;</span><br><span class="line">            newCapacity = (minCapacity &gt; Integer.MAX_VALUE - 8) ?</span><br><span class="line">                    Integer.MAX_VALUE :</span><br><span class="line">                    Integer.MAX_VALUE - 8;</span><br><span class="line">        &#125;</span><br><span class="line">        queue = Arrays.copyOf(queue, newCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void siftUp(int k, E x) &#123;</span><br><span class="line">        siftUpComparable(k, x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    private void siftUpComparable(int k, E x) &#123;</span><br><span class="line">        Comparable&lt;? super E&gt; key = (Comparable&lt;? super E&gt;) x;</span><br><span class="line">        logger.info(&quot;【入队】元素：&#123;&#125; 当前队列：&#123;&#125;&quot;, JSON.toJSONString(key), JSON.toJSONString(queue));</span><br><span class="line">        while (k &gt; 0) &#123;</span><br><span class="line">            // 获取父节点Idx，相当于除以2</span><br><span class="line">            int parent = (k - 1) &gt;&gt;&gt; 1;</span><br><span class="line">            logger.info(&quot;【入队】寻找当前节点的父节点位置。k：&#123;&#125; parent：&#123;&#125;&quot;, k, parent);</span><br><span class="line">            Object e = queue[parent];</span><br><span class="line">            // 如果当前位置元素，大于父节点元素，则退出循环</span><br><span class="line">            if (key.compareTo((E) e) &gt;= 0) &#123;</span><br><span class="line">                logger.info(&quot;【入队】值比对，父节点：&#123;&#125; 目标节点：&#123;&#125;&quot;, JSON.toJSONString(e), JSON.toJSONString(key));</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            // 相反父节点位置大于当前位置元素，则进行替换</span><br><span class="line">            logger.info(&quot;【入队】替换过程，父子节点位置替换，继续循环。父节点值：&#123;&#125; 存放到位置：&#123;&#125;&quot;, JSON.toJSONString(e), k);</span><br><span class="line">            queue[k] = e;</span><br><span class="line">            k = parent;</span><br><span class="line">        &#125;</span><br><span class="line">        queue[k] = key;</span><br><span class="line">        logger.info(&quot;【入队】完成 Idx：&#123;&#125; Val：&#123;&#125; \r\n当前队列：&#123;&#125; \r\n&quot;, k, JSON.toJSONString(key), JSON.toJSONString(queue));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean add(E e) &#123;</span><br><span class="line">        return offer(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    @Override</span><br><span class="line">    public E poll() &#123;</span><br><span class="line">        if (size == 0) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        int s = --size;</span><br><span class="line">        E result = (E) queue[0];</span><br><span class="line">        E x = (E) queue[s];</span><br><span class="line">        queue[s] = null;</span><br><span class="line">        if (s != 0) &#123;</span><br><span class="line">            siftDown(0, x);</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void siftDown(int k, E x) &#123;</span><br><span class="line">        siftDownComparable(k, x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    private void siftDownComparable(int k, E x) &#123;</span><br><span class="line">        Comparable&lt;? super E&gt; key = (Comparable&lt;? super E&gt;) x;</span><br><span class="line">        // 先找出中间件节点</span><br><span class="line">        int half = size &gt;&gt;&gt; 1;</span><br><span class="line">        while (k &lt; half) &#123;</span><br><span class="line">            // 找到左子节点和右子节点，两个节点进行比较，找出最大的值</span><br><span class="line">            int child = (k &lt;&lt; 1) + 1;</span><br><span class="line">            Object c = queue[child];</span><br><span class="line">            int right = child + 1;</span><br><span class="line">            // 左子节点与右子节点比较，取最小的节点</span><br><span class="line">            if (right &lt; size &amp;&amp; ((Comparable&lt;? super E&gt;) c).compareTo((E) queue[right]) &gt; 0) &#123;</span><br><span class="line">                logger.info(&quot;【出队】左右子节点比对，获取最小值。left：&#123;&#125; right：&#123;&#125;&quot;, JSON.toJSONString(c), JSON.toJSONString(queue[right]));</span><br><span class="line">                c = queue[child = right];</span><br><span class="line">            &#125;</span><br><span class="line">            // 目标值与c比较，当目标值小于c值，退出循环。说明此时目标值所在位置适合，迁移完成。</span><br><span class="line">            if (key.compareTo((E) c) &lt;= 0) &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            // 目标值小于c值，位置替换，继续比较</span><br><span class="line">            logger.info(&quot;【出队】替换过程，节点的值比对。上节点：&#123;&#125; 下节点：&#123;&#125; 位置替换&quot;, JSON.toJSONString(queue[k]), JSON.toJSONString(c));</span><br><span class="line">            queue[k] = c;</span><br><span class="line">            k = child;</span><br><span class="line">        &#125;</span><br><span class="line">        // 把目标值放到对应位置</span><br><span class="line">        logger.info(&quot;【出队】替换结果，最终更换位置。Idx：&#123;&#125; Val：&#123;&#125;&quot;, k, JSON.toJSONString(key));</span><br><span class="line">        queue[k] = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    @Override</span><br><span class="line">    public E peek() &#123;</span><br><span class="line">        return (size == 0) ? null : (E) queue[0];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>DelayQueue 延迟队列</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class DelayQueue&lt;E  extends Delayed&gt; implements BlockingQueue&lt;E&gt;&#123;</span><br><span class="line">    private final transient ReentrantLock lock = new ReentrantLock();</span><br><span class="line">    private final PriorityQueue&lt;E&gt; q = new PriorityQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    private final Condition available = lock.newCondition();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean add(E e) &#123;</span><br><span class="line">        return offer(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean offer(E e) &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            q.offer(e);</span><br><span class="line">            if (q.peek() == e) &#123;</span><br><span class="line">                available.signal();</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public E poll() &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            E first = q.peek();</span><br><span class="line">            if (first == null || first.getDelay(NANOSECONDS) &gt; 0) &#123;</span><br><span class="line">                return null;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                return q.poll();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public E peek() &#123;</span><br><span class="line">        final ReentrantLock lock = this.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            return q.peek();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>测试代码 QueueTest</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class QueueTest &#123;</span><br><span class="line">    private final Logger logger = LoggerFactory.getLogger(QueueTest.class);</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void test_queue() throws InterruptedException &#123;</span><br><span class="line">        Queue&lt;Job&gt; queue = new DelayQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        queue.add(new Job(&quot;1号&quot;, 1000L));</span><br><span class="line">        queue.add(new Job(&quot;3号&quot;, 3000L));</span><br><span class="line">        queue.add(new Job(&quot;5号&quot;, 5000L));</span><br><span class="line">        queue.add(new Job(&quot;11号&quot;, 11000L));</span><br><span class="line">        queue.add(new Job(&quot;4号&quot;, 4000L));</span><br><span class="line">        queue.add(new Job(&quot;6号&quot;, 6000L));</span><br><span class="line">        queue.add(new Job(&quot;7号&quot;, 7000L));</span><br><span class="line">        queue.add(new Job(&quot;12号&quot;, 12000L));</span><br><span class="line">        queue.add(new Job(&quot;15号&quot;, 15000L));</span><br><span class="line">        queue.add(new Job(&quot;10号&quot;, 10000L));</span><br><span class="line">        queue.add(new Job(&quot;9号&quot;, 9000L));</span><br><span class="line">        queue.add(new Job(&quot;8号&quot;, 8000L));</span><br><span class="line"></span><br><span class="line">        while (true) &#123;</span><br><span class="line">            Job poll = queue.poll();</span><br><span class="line">            if (null == poll) &#123;</span><br><span class="line">                Thread.sleep(10);</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            logger.info(poll.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static class Job implements Delayed &#123;</span><br><span class="line"></span><br><span class="line">        private final String name;</span><br><span class="line">        private final Long begin;</span><br><span class="line">        private final Long delayTime;</span><br><span class="line"></span><br><span class="line">        public Job(String name, Long delayTime) &#123;</span><br><span class="line">            this.name = name;</span><br><span class="line">            this.begin = System.currentTimeMillis();</span><br><span class="line">            this.delayTime = delayTime;//延时时长</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public long getDelay(TimeUnit unit) &#123;</span><br><span class="line">            return unit.convert(begin + delayTime - System.currentTimeMillis(), TimeUnit.MICROSECONDS);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public String getName() &#123;</span><br><span class="line">            return name;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public int compareTo(Delayed o) &#123;</span><br><span class="line">            Job job = (Job) o;</span><br><span class="line">            return (int) (this.getDelay(TimeUnit.MICROSECONDS) - job.getDelay(TimeUnit.MICROSECONDS));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>algorithms</tag>
       </tags>
   </entry>
   <entry>
